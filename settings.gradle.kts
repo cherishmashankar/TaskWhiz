@@ -7,6 +7,8 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
+
+
         mavenCentral()
         gradlePluginPortal()
     }
@@ -17,6 +19,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
+
 }
 
 rootProject.name = "TaskWhiz"

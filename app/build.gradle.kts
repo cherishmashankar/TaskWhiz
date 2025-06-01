@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -49,6 +51,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.adapters)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -56,4 +59,33 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+// Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+
+// Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+
+// Coroutines
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+
+// Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+
+// Hilt WorkManager
+    implementation(libs.hilt.work)
+    kapt(libs.hilt.work.compiler)
+
+// Lifecycle (already mapped)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
+// LeakCanary
+    debugImplementation(libs.leakcanary)
+
 }
