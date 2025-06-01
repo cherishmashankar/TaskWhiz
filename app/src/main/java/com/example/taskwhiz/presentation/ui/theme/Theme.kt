@@ -1,4 +1,4 @@
-package com.example.taskwhiz.ui.theme
+package com.example.taskwhiz.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build

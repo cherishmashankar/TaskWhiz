@@ -79,13 +79,15 @@ dependencies {
     kapt(libs.hilt.compiler)
 
 // Hilt WorkManager
-    implementation(libs.hilt.work)
-    kapt(libs.hilt.work.compiler)
+//    implementation(libs.hilt.work)
+//    kapt(libs.hilt.work.compiler)
 
 // Lifecycle (already mapped)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
 // LeakCanary
     debugImplementation(libs.leakcanary)
+
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
 }
