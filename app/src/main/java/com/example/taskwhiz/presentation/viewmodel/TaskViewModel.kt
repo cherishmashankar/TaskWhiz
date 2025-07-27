@@ -6,7 +6,9 @@ import com.example.taskwhiz.domain.model.Task
 import com.example.taskwhiz.domain.repository.TaskRepository
 import com.example.taskwhiz.domain.usecase.GetAllTasksUseCase
 import com.example.taskwhiz.domain.usecase.InsertRawNoteUseCase
+import com.example.taskwhiz.domain.usecase.InsertTaskUseCase
 import com.example.taskwhiz.domain.usecase.SyncMessyTasksUseCase
+import com.example.taskwhiz.domain.usecase.UpdateTaskUseCase
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -18,23 +20,11 @@ class TaskViewModel @Inject constructor(
     private val insertRawNoteUseCase: InsertRawNoteUseCase,
     private val syncMessyTasksUseCase: SyncMessyTasksUseCase,
     private val getAllTasksUseCase: GetAllTasksUseCase,
-    private val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository,
+    private val insertTaskUseCase: InsertTaskUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase
 ) : ViewModel() {
 
-    init {
-        viewModelScope.launch {
-            taskRepository.insertTask(
-                Task(
-                    title = "Plan trip",
-                    tag = "Personal",
-                    createdAt = System.currentTimeMillis(),
-                    isMessy = false,
-                    taskItems = listOf("Book hotel", "Check flights"),
-                    priorityLevel = 0
-                )
-            )
-        }
-    }
 
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
     val tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
@@ -45,18 +35,39 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun addNote(rawInput: String, isOnline: Boolean) {
+    fun addNewTask(
+        title: String,
+        colorCode: String,
+        subtasks: List<String>
+    ) {
         viewModelScope.launch {
-            if (isOnline) syncMessyTasksUseCase(System.currentTimeMillis())
-            else insertRawNoteUseCase(rawInput, System.currentTimeMillis())
+            val currentTime = System.currentTimeMillis()
 
+            val newTask = Task(
+                title = title,
+                tag = "",
+                createdAt = currentTime,
+                isMessy = true, // mark messy initially (parsed later)
+                taskItems = subtasks,
+                priorityLevel = 0,
+                colorCode = colorCode
+            )
+
+            insertTaskUseCase(newTask)
             loadTasks()
         }
     }
-
-    fun addRawNote(rawText: String) {
+    fun updateExistingTask(task: Task) {
         viewModelScope.launch {
-            insertRawNoteUseCase(rawText, System.currentTimeMillis())
+            updateTaskUseCase(task)
         }
     }
+
+    fun addNewTask(task: Task) {
+        viewModelScope.launch {
+            insertTaskUseCase(task)
+        }
+    }
+
+
 }

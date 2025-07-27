@@ -89,5 +89,8 @@ dependencies {
     debugImplementation(libs.leakcanary)
 
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("androidx.compose.material:material-icons-extended")
+
+
 
 }
