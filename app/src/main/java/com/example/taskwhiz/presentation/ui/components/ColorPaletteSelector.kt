@@ -46,7 +46,7 @@ fun ColorPaletteSelector(
 
             Box(
                 modifier = Modifier
-                    .size(if (isSelected) 40.dp else 34.dp) // Highlight selection
+                    .size(if (isSelected) 50.dp else 44.dp) // Highlight selection
                     .clip(CircleShape)
                     .background(parsedColor)
                     .border(

@@ -9,6 +9,8 @@ import com.example.taskwhiz.data.remote.TaskResponse
 import com.example.taskwhiz.domain.model.Task
 import com.example.taskwhiz.domain.repository.TaskRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,6 +24,24 @@ class TaskRepositoryImpl @Inject constructor(
         taskDao.insertTask(task.toEntity())
     }
 
+    override suspend fun deleteTask(task: Task) {
+        taskDao.deleteTask(task.toEntity()) // Map to entity
+    }
+
+    override suspend fun getAllTasks(): Flow<List<Task>> {
+        return taskDao.getAllTasks().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+    override suspend fun updateTask(task: Task) {
+        taskDao.updateTask(task.toEntity())
+    }
+
+
+    override suspend fun getMessyTasks(): List<Task> {
+        return taskDao.getMessyTasks().map { it.toDomain() }
+    }
+
     override suspend fun insertMessyNote(rawInput: String): Long {
         val timestamp = System.currentTimeMillis()
         return taskDao.insertTask(
@@ -33,18 +53,6 @@ class TaskRepositoryImpl @Inject constructor(
                 isMessy = true
             ).toEntity()
         )
-    }
-
-    override suspend fun getMessyTasks(): List<Task> {
-        return taskDao.getMessyTasks().map { it.toDomain() }
-    }
-
-    override suspend fun getAllTasks(): List<Task> {
-        return taskDao.getAllTasks().map { it.toDomain() }
-    }
-
-    override suspend fun updateTask(task: Task) {
-        taskDao.updateTask(task.toEntity())
     }
 
     suspend fun syncMessyTasks(currentTime: Long) = withContext(Dispatchers.IO) {

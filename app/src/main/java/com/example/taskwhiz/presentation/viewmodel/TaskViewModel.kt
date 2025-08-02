@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.taskwhiz.domain.model.Task
 import com.example.taskwhiz.domain.repository.TaskRepository
+import com.example.taskwhiz.domain.usecase.DeleteTaskUseCase
 import com.example.taskwhiz.domain.usecase.GetAllTasksUseCase
 import com.example.taskwhiz.domain.usecase.InsertRawNoteUseCase
 import com.example.taskwhiz.domain.usecase.InsertTaskUseCase
@@ -17,44 +18,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskViewModel @Inject constructor(
-    private val insertRawNoteUseCase: InsertRawNoteUseCase,
-    private val syncMessyTasksUseCase: SyncMessyTasksUseCase,
     private val getAllTasksUseCase: GetAllTasksUseCase,
-    private val taskRepository: TaskRepository,
     private val insertTaskUseCase: InsertTaskUseCase,
-    private val updateTaskUseCase: UpdateTaskUseCase
+    private val updateTaskUseCase: UpdateTaskUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase,
 ) : ViewModel() {
-
 
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
     val tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
 
-    fun loadTasks() {
+    init {
         viewModelScope.launch {
-            _tasks.value = getAllTasksUseCase()
-        }
-    }
-
-    fun addNewTask(
-        title: String,
-        colorCode: String,
-        subtasks: List<String>
-    ) {
-        viewModelScope.launch {
-            val currentTime = System.currentTimeMillis()
-
-            val newTask = Task(
-                title = title,
-                tag = "",
-                createdAt = currentTime,
-                isMessy = true, // mark messy initially (parsed later)
-                taskItems = subtasks,
-                priorityLevel = 0,
-                colorCode = colorCode
-            )
-
-            insertTaskUseCase(newTask)
-            loadTasks()
+            getAllTasksUseCase().collect { taskList ->
+                _tasks.value = taskList
+            }
         }
     }
     fun updateExistingTask(task: Task) {
@@ -68,6 +45,21 @@ class TaskViewModel @Inject constructor(
             insertTaskUseCase(task)
         }
     }
+
+    fun deleteTask(task: Task) {
+        viewModelScope.launch {
+            deleteTaskUseCase(task)
+        }
+    }
+
+    fun toggleTaskCompletion(task: Task) {
+        viewModelScope.launch {
+            val updatedTask = task.copy(isCompleted = !task.isCompleted)
+            updateTaskUseCase(updatedTask)
+        }
+    }
+
+
 
 
 }

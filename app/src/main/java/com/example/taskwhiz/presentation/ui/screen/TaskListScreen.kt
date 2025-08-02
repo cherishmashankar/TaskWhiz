@@ -19,6 +19,11 @@ import com.example.taskwhiz.presentation.ui.components.TaskEditorBottomSheet
 import com.example.taskwhiz.presentation.ui.components.TaskItem
 import com.example.taskwhiz.presentation.util.NetworkUtils
 import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import com.example.taskwhiz.domain.model.Task
 
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -29,41 +34,59 @@ fun TaskListScreen(viewModel: TaskViewModel) {
     val tasks by viewModel.tasks.collectAsState()
     val context = LocalContext.current
     val isOnline = remember { mutableStateOf(NetworkUtils.isOnline(context)) }
+    var showSheet by remember { mutableStateOf(false) }
+    var selectedTask: Task? by remember { mutableStateOf(null) }
 
-    var showAddSheet by remember { mutableStateOf(false) } // controls bottom sheet visibility
 
-    LaunchedEffect(Unit) { viewModel.loadTasks() }
 
-    // Scaffold for task list
+// Scaffold for task list
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showAddSheet = true }, // open bottom sheet
-                modifier = Modifier
-                    .padding(16.dp)
+                onClick = {
+                    // For adding, ensure selectedTask is null
+                    selectedTask = null
+                    showSheet = true
+                },
+                modifier = Modifier.padding(16.dp)
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
         }
     ) { paddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
-            items(tasks) { task -> TaskItem(task = task) }
+            items(tasks) { task ->
+                TaskItem(
+                    task = task,
+                    onEditClick = { clickedTask ->
+
+                        selectedTask = clickedTask
+                        showSheet = true
+                    },
+                    onDeleteClick = { clickedTask ->
+                            viewModel.deleteTask(clickedTask)
+                    },
+                    onToggle = {
+                        viewModel.toggleTaskCompletion(task)
+                    }
+                )
+            }
         }
     }
 
-    // Bottom Sheet for Add Task
-    if (showAddSheet) {
+// Bottom Sheet for Add / Edit Task
+    if (showSheet) {
         TaskEditorBottomSheet(
-            task = null,
+            task = selectedTask, // null → add, not null → edit
             onSave = { newTask ->
                 viewModel.addNewTask(newTask)
-                showAddSheet = false
+                showSheet = false
             },
             onUpdate = { updatedTask ->
                 viewModel.updateExistingTask(updatedTask)
-                showAddSheet = false
+                showSheet = false
             },
-            onDismiss = { showAddSheet = false }
+            onDismiss = { showSheet = false }
         )
     }
 
