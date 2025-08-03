@@ -1,7 +1,6 @@
 package com.example.taskwhiz.presentation.ui.components
 
 
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,7 +26,6 @@ import com.example.taskwhiz.presentation.ui.theme.TaskWhizTheme
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.FiberManualRecord
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +33,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 import java.text.DateFormat
 import java.util.*
-import androidx.core.graphics.toColorInt
 
 @Composable
 fun TaskItem(
@@ -43,18 +40,20 @@ fun TaskItem(
     modifier: Modifier = Modifier,
     onEditClick: (Task) -> Unit,
     onDeleteClick: (Task) -> Unit,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
+
+
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp, horizontal = 4.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        modifier = Modifier.fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 16.dp),
+        shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
     ) {
+
+
         Column(modifier = Modifier.fillMaxWidth()) {
 
             // Top Row: Completion + Title + Expand
@@ -74,7 +73,7 @@ fun TaskItem(
                         style = MaterialTheme.typography.titleLarge.copy(
                             textDecoration = if (task.isCompleted) TextDecoration.LineThrough else TextDecoration.None,
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = 20.sp
+                            fontSize = 16.sp
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -98,20 +97,22 @@ fun TaskItem(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Updated: ${DateFormat.getDateTimeInstance().format(Date(task.lastModifiedAt))}",
+                        text = "Updated: ${
+                            DateFormat.getDateTimeInstance().format(Date(task.lastModifiedAt))
+                        }",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray
                     )
 
-                    task.dueAt?.let {
+                    /*                    task.dueAt?.let {
                         Text(
                             text = "Due: ${DateFormat.getDateTimeInstance().format(Date(it))}",
                             style = MaterialTheme.typography.bodyMedium,
                             color = if (it < System.currentTimeMillis()) Color.Red else Color.Gray
                         )
-                    }
+                    }*/
 
-                    task.reminderAt?.let {
+                    /*                    task.reminderAt?.let {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Default.Notifications,
@@ -126,7 +127,7 @@ fun TaskItem(
                                 color = Color.Gray
                             )
                         }
-                    }
+                    }*/
                 }
             }
 
@@ -149,8 +150,8 @@ fun TaskItem(
                                     contentDescription = null,
                                     tint = Color.Gray,
                                     modifier = Modifier
-                                        .size(16.dp)
-                                        .padding(end = 4.dp)
+                                        .size(20.dp)
+                                        .padding(end = 8.dp)
                                 )
                                 Text(
                                     text = it,
@@ -182,7 +183,10 @@ fun TaskItem(
                             )
                         }
 
-                        TextButton(onClick = { onDeleteClick(task) }) {
+                        TextButton(onClick = {
+                            onDeleteClick(task)
+                            expanded = false
+                        }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "Delete Note",
@@ -205,31 +209,4 @@ fun TaskItem(
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun TaskItemPreview() {
-    TaskWhizTheme {
-        TaskItem(
-            task = Task(
-                id = 1,
-                title = "Prepare presentation",
-                tag = "Work",
-                createdAt = System.currentTimeMillis() - 1000000,
-                lastModifiedAt = System.currentTimeMillis(),
-                dueAt = null,
-                reminderAt = System.currentTimeMillis() + 3600000,
-                taskItems = listOf("Add charts", "Rehearse", "Send invite"),
-                isMessy = false,
-                rawInput = null,
-                isCompleted = false,
-                colorCode = "#FF9300",
-                priorityLevel = 0,
-                archived = false
-            ),
-            modifier = TODO(),
-            onEditClick = TODO(),
-            onDeleteClick = TODO(),
-            onToggle = TODO(),
-        )
-    }
-}
+

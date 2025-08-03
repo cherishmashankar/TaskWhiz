@@ -10,50 +10,44 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 
 
-// Light Theme Colors
+
+
+
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF4CAF50),             // Green primary
+    primary = Color(0xFF2E7D32),       // Rich green - primary actions
     onPrimary = Color.White,
-    background = Color(0xFFF9F9F9),           // Soft off-white
-    surface = Color.White,
-    onSurface = Color(0xFF333333),            // Dark text
-    secondary = Color(0xFFFF9800),            // Accent (orange)
+    background = Color(0xFFF7F7F7),    // Light neutral gray (screen background)
+    onBackground = Color(0xFF1C1C1C),
+    surface = Color(0x94FFFFFF).copy(alpha = 0.9f), // Softer white, slightly translucent look
+    onSurface = Color(0xFF1C1C1C),
+    secondary = Color(0xFFFB8C00),     // Warm orange accent
     onSecondary = Color.White,
-    error = Color(0xFFD32F2F),
+    error = Color(0xFFE53935),
     onError = Color.White
 )
 
-// Dark Theme Colors
+
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF81C784),              // Lighter green
+    primary = Color(0xFF81C784),        // Light green - good contrast on dark
     onPrimary = Color.Black,
-    background = Color(0xFF121212),           // Dark background
-    surface = Color(0xFF1E1E1E),              // Card-like surface
-    onSurface = Color.White,
-    secondary = Color(0xFFFFB74D),
+    background = Color(0xFF121212),     // Deep dark gray (main background)
+    onBackground = Color(0xFFE0E0E0),
+    surface = Color(0xFF1E1E1E).copy(alpha = 0.95f), // Softer dark card surface
+    onSurface = Color(0xFFE0E0E0),
+    secondary = Color(0xFFFFB74D),      // Amber accent
     onSecondary = Color.Black,
     error = Color(0xFFEF5350),
     onError = Color.Black
 )
+
 @Composable
 fun TaskWhizTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicLightColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> LightColorScheme
-        else -> LightColorScheme
-    }
+    val colorScheme = if (darkTheme) DarkColorScheme else DarkColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,

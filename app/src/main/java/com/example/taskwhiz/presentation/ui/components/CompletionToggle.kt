@@ -51,7 +51,7 @@ fun CompletionToggle(
             .scale(scale)
             .clip(CircleShape)
             .border(
-                width = if (isCompleted) 0.dp else 2.dp,
+                width = if (isCompleted) 0.dp else 6.dp,
                 color = if (isCompleted) Color.Transparent else color,
                 shape = CircleShape
             )
@@ -69,5 +69,6 @@ fun CompletionToggle(
         }
     }
 }
+
 
 

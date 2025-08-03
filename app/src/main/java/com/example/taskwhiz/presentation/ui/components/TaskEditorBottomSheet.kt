@@ -87,7 +87,7 @@ fun TaskEditorBottomSheet(
                         title = title,
                         colorCode = selectedColor,
                         taskItems = subtasks.filter { it.isNotBlank() },
-                        createdAt = task?.createdAt ?: System.currentTimeMillis(), // preserve on update
+                        createdAt = task?.createdAt ?: System.currentTimeMillis(),
                         isMessy = task?.isMessy ?: true,
                         priorityLevel = task?.priorityLevel ?: 0
                     )
