@@ -31,16 +31,10 @@ fun CompletionToggle(
     onToggle: () -> Unit
 ) {
     val transition = updateTransition(targetState = isCompleted, label = "CompletionTransition")
-
-    // Convert hex color to Compose Color
     val taskColor = Color(colorHex.toColorInt())
-
-    // Animate fill/outline color
     val color by transition.animateColor(label = "ColorTransition") { state ->
         if (state) taskColor else taskColor
     }
-
-    // Animate scale "pop" when toggled
     val scale by transition.animateFloat(label = "ScaleTransition") { state ->
         if (state) 1.1f else 1f
     }
@@ -51,7 +45,7 @@ fun CompletionToggle(
             .scale(scale)
             .clip(CircleShape)
             .border(
-                width = if (isCompleted) 0.dp else 6.dp,
+                width = if (isCompleted) 0.dp else 4.dp,
                 color = if (isCompleted) Color.Transparent else color,
                 shape = CircleShape
             )
@@ -64,7 +58,7 @@ fun CompletionToggle(
                 imageVector = Icons.Default.Check,
                 contentDescription = "Completed",
                 tint = Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(24.dp)
             )
         }
     }

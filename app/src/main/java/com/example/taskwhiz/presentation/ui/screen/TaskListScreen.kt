@@ -1,54 +1,57 @@
 package com.example.taskwhiz.presentation.ui.screen
 
-
 import android.Manifest
 import android.os.Build
-import android.text.format.DateUtils
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import com.example.taskwhiz.presentation.ui.components.TaskEditorBottomSheet
-import com.example.taskwhiz.presentation.ui.components.TaskItem
-import com.example.taskwhiz.presentation.util.NetworkUtils
-import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import com.example.taskwhiz.R
 import com.example.taskwhiz.domain.model.Task
-import java.util.Calendar
-
+import com.example.taskwhiz.presentation.ui.components.TaskEditorBottomSheet
+import com.example.taskwhiz.presentation.ui.components.TaskItem
+import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-@OptIn(ExperimentalMaterial3Api::class)
 @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
 @Composable
 fun TaskListScreen(viewModel: TaskViewModel) {
     val tasks by viewModel.tasks.collectAsState()
-    val context = LocalContext.current
-    val isOnline = remember { mutableStateOf(NetworkUtils.isOnline(context)) }
+
     var showSheet by remember { mutableStateOf(false) }
     var selectedTask: Task? by remember { mutableStateOf(null) }
 
@@ -58,7 +61,6 @@ fun TaskListScreen(viewModel: TaskViewModel) {
 
     val statusFilters = listOf("All", "Completed", "Pending")
     val dateFilters = listOf("All Dates", "Today", "This Week", "Overdue")
-
 
     Scaffold(
         floatingActionButton = {
@@ -70,11 +72,12 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 modifier = Modifier.padding(16.dp),
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
-
             ) {
-                Icon(Icons.Default.Add,
-                    contentDescription = "Add",
-                    )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_task_add),
+                    contentDescription = "Add Task",
+                    modifier = Modifier.size(28.dp)
+                )
             }
         }
     ) { paddingValues ->
@@ -82,9 +85,8 @@ fun TaskListScreen(viewModel: TaskViewModel) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                  .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.background)
         ) {
-
             Spacer(Modifier.height(32.dp))
 
             Card(
@@ -92,28 +94,47 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 shape = RoundedCornerShape(25),
-                elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
             ) {
                 TextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Search tasks") },
+                    placeholder = {
+                        Text(
+                            "Search tasks",
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "Search"
+                            contentDescription = "Search",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                         )
                     },
                     singleLine = true,
-/*                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                        errorTextColor = MaterialTheme.colorScheme.error,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        errorContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent
-                    )*/
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        errorCursorColor = MaterialTheme.colorScheme.error
+                    )
                 )
             }
-
 
             LazyRow(
                 modifier = Modifier
@@ -121,7 +142,8 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                     .padding(horizontal = 16.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(statusFilters) { filter ->
+                items(statusFilters.size) { i ->
+                    val filter = statusFilters[i]
                     FilterChip(
                         selected = selectedStatus == filter,
                         onClick = { selectedStatus = filter },
@@ -130,21 +152,23 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 }
             }
 
-/*            // Date Filter Chips
+            /*
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(dateFilters) { filter ->
+                items(dateFilters.size) { i ->
+                    val filter = dateFilters[i]
                     FilterChip(
                         selected = selectedDateFilter == filter,
                         onClick = { selectedDateFilter = filter },
                         label = { Text(filter) }
                     )
                 }
-            }*/
+            }
+            */
 
             // Filter + Search Logic
             val filteredTasks = tasks.filter { task ->
@@ -166,10 +190,17 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 matchesSearch && matchesStatus && matchesDate
             }
 
-
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            ) {
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     itemsIndexed(filteredTasks) { index, task ->
                         TaskItem(
                             task = task,
@@ -185,10 +216,17 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                             }
                         )
 
+                        if (index < filteredTasks.lastIndex) {
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                                modifier = Modifier.padding(start = 52.dp)
+                            )
+                        }
                     }
                 }
+            }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(32.dp))
         }
     }
 
@@ -207,4 +245,3 @@ fun TaskListScreen(viewModel: TaskViewModel) {
         )
     }
 }
-

@@ -50,7 +50,7 @@ fun ColorPaletteSelector(
                     .clip(CircleShape)
                     .background(parsedColor)
                     .border(
-                        width = if (isSelected) 3.dp else 1.dp,
+                        width = if (isSelected) 5.dp else 1.dp,
                         color = if (isSelected) Color.Black.copy(alpha = 0.7f) else Color.Gray.copy(
                             alpha = 0.3f
                         ),

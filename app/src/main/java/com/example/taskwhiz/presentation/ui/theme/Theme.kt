@@ -16,32 +16,33 @@ import androidx.compose.ui.graphics.Color
 
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF2E7D32),       // Rich green - primary actions
+    primary = Color(0xFF9B6DFF),      // Vibrant purple
     onPrimary = Color.White,
-    background = Color(0xFFF7F7F7),    // Light neutral gray (screen background)
-    onBackground = Color(0xFF1C1C1C),
-    surface = Color(0x94FFFFFF).copy(alpha = 0.9f), // Softer white, slightly translucent look
-    onSurface = Color(0xFF1C1C1C),
-    secondary = Color(0xFFFB8C00),     // Warm orange accent
+    background = Color(0xFFF4F1FA),   // Soft lavender background
+    onBackground = Color(0xFF1E1A22), // Dark text
+    surface = Color(0xFFFFFFFF),      // Card surface
+    onSurface = Color(0xFF1E1A22),
+    secondary = Color(0xFFB794F6),    // Lighter purple accent
     onSecondary = Color.White,
-    error = Color(0xFFE53935),
-    onError = Color.White
+    error = Color(0xFFE57373),
+    onError = Color.White,
+    surfaceVariant = Color(0xFFF4F1FA)
 )
 
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF81C784),        // Light green - good contrast on dark
+    primary = Color(0xFFB794F6),       // Lighter purple for dark backgrounds
     onPrimary = Color.Black,
-    background = Color(0xFF121212),     // Deep dark gray (main background)
-    onBackground = Color(0xFFE0E0E0),
-    surface = Color(0xFF1E1E1E).copy(alpha = 0.95f), // Softer dark card surface
-    onSurface = Color(0xFFE0E0E0),
-    secondary = Color(0xFFFFB74D),      // Amber accent
+    background = Color(0xFF1C1A23),    // Deep purple background
+    onBackground = Color(0xFFEDE7F6),  // Soft light text
+    surface = Color(0xFF2B2733),       // Slightly elevated surface
+    onSurface = Color(0xFFEDE7F6),
+    secondary = Color(0xFF9B6DFF),     // Vibrant accent
     onSecondary = Color.Black,
-    error = Color(0xFFEF5350),
-    onError = Color.Black
+    error = Color(0xFFEF9A9A),
+    onError = Color.Black,
+    surfaceVariant = Color(0xFF2A2633)
 )
-
 @Composable
 fun TaskWhizTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
