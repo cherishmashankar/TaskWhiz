@@ -42,7 +42,10 @@ fun TaskEditorOverflowMenu(
         ) {
             // Add or update actions
             DropdownMenuItem(
-                leadingIcon = { Icon(Icons.Filled.DateRange, contentDescription = null) },
+                leadingIcon = { Icon(
+                    Icons.Filled.DateRange,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary) },
                 text = { Text(if (hasDue) "Edit Due Date" else "Add Due Date") },
                 onClick = {
                     expanded = false
@@ -50,7 +53,10 @@ fun TaskEditorOverflowMenu(
                 }
             )
             DropdownMenuItem(
-                leadingIcon = { Icon(Icons.Filled.Notifications, contentDescription = null) },
+                leadingIcon = { Icon(
+                    Icons.Filled.Notifications,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary) },
                 text = { Text(if (hasReminder) "Edit Reminder" else "Set Reminder") },
                 onClick = {
                     expanded = false
@@ -64,7 +70,9 @@ fun TaskEditorOverflowMenu(
             }
             if (hasDue) {
                 DropdownMenuItem(
-                    leadingIcon = { Icon(Icons.Filled.Close, contentDescription = null) },
+                    leadingIcon = { Icon(Icons.Filled.Close,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error) },
                     text = { Text("Remove Due Date", color = MaterialTheme.colorScheme.error) },
                     onClick = {
                         expanded = false
@@ -74,7 +82,10 @@ fun TaskEditorOverflowMenu(
             }
             if (hasReminder) {
                 DropdownMenuItem(
-                    leadingIcon = { Icon(Icons.Filled.Close, contentDescription = null) },
+                    leadingIcon = {
+                        Icon(Icons.Filled.Close,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error) },
                     text = { Text("Remove Reminder", color = MaterialTheme.colorScheme.error) },
                     onClick = {
                         expanded = false

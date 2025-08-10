@@ -9,6 +9,8 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +27,9 @@ fun TaskOverflowMenu(
     var menuExpanded by remember { mutableStateOf(false) }
 
     Box {
-        IconButton(onClick = { menuExpanded = true }) {
+        IconButton(
+            onClick = { menuExpanded = true },
+            ) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "More Options"
@@ -44,7 +48,8 @@ fun TaskOverflowMenu(
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit Task"
+                        contentDescription = "Edit Task",
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             )
@@ -59,7 +64,7 @@ fun TaskOverflowMenu(
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete Task",
-                        tint = Color.Red
+                        tint = MaterialTheme.colorScheme.error
                     )
                 }
             )

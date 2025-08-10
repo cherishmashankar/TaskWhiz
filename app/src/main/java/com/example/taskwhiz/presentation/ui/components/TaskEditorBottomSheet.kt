@@ -2,7 +2,10 @@ package com.example.taskwhiz.presentation.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -16,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import com.example.taskwhiz.domain.model.Task
+
 
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -52,65 +56,81 @@ fun TaskEditorBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .imePadding()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
+            val listState = rememberLazyListState()
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(bottom = 8.dp)
             ) {
-
-                Column(modifier = Modifier.weight(1f) ) {
-                    TaskTitleInput(
-                        title = title,
-                        onTitleChange = { title = it }
-                    )
+                // Title + overflow
+                item {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        TaskTitleInput(
+                            title = title,
+                            onTitleChange = { title = it },
+                            modifier = Modifier.weight(1f)
+                        )
+                        TaskEditorOverflowMenu(
+                            hasDue = dueDate != null,
+                            hasReminder = reminderDate != null,
+                            onRequestSetDueDate = { showDatePickerForDue = true },
+                            onRequestSetReminder = { showDatePickerForReminder = true },
+                            onClearDueDate = { dueDate = null },
+                            onClearReminder = { reminderDate = null }
+                        )
+                    }
                 }
 
-/*                TaskEditorOverflowMenu(
-                    hasDue = dueDate != null,
-                    hasReminder = reminderDate != null,
-                    onRequestSetDueDate = { showDatePickerForDue = true },
-                    onRequestSetReminder = { showDatePickerForReminder = true },
-                    onClearDueDate = { dueDate = null },
-                    onClearReminder = { reminderDate = null }
-                )*/
+                // GROUPED interactive section (like the mock)
+                item {
+                    Card(
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Spacer(Modifier.height(20.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            ColorPaletteSelector(
+                                selectedColor = selectedColor,
+                                onColorChange = { selectedColor = it }
+                            )
+
+                            ScheduleSection(
+                                dueDate = dueDate,
+                                reminderDate = reminderDate,
+                                onSetDueClick = { showDatePickerForDue = true },
+                                onClearDue = { dueDate = null },
+                                onSetReminderClick = { showDatePickerForReminder = true },
+                                onClearReminder = { reminderDate = null },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            SubtaskListEditor(
+                                subtasks = subtasks,
+                                onSubtasksChange = { subtasks = it }
+                            )
+                            Spacer(Modifier.height(20.dp))
+                        }
+                    }
+                }
             }
-
-            Spacer(Modifier.height(12.dp))
-
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                ColorPaletteSelector(
-                    selectedColor = selectedColor,
-                    onColorChange = { selectedColor = it }
-                )
-
-                Spacer(Modifier.height(20.dp))
-
-                SubtaskListEditor(
-                    subtasks = subtasks,
-                    onSubtasksChange = { subtasks = it }
-                )
-                Spacer(Modifier.height(32.dp))
-
-
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            ScheduleSection(
-                dueDate = dueDate,
-                reminderDate = reminderDate,
-                onSetDueClick = { showDatePickerForDue = true },
-                onClearDue = { dueDate = null },
-                onSetReminderClick = { showDatePickerForReminder = true },
-                onClearReminder = { reminderDate = null },
-                modifier = Modifier.fillMaxWidth()
-            )
 
 
             Button(
@@ -151,7 +171,6 @@ fun TaskEditorBottomSheet(
                 )
             }
 
-
             if (showTitleError && title.isBlank()) {
                 Text(
                     text = "Title cannot be empty",
@@ -160,12 +179,9 @@ fun TaskEditorBottomSheet(
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
-
         }
 
-
-
-        // Due Date picker (date only) — own state each time
+        // Due Date picker (date only)
         if (showDatePickerForDue) {
             val duePickerState = rememberDatePickerState(
                 initialSelectedDateMillis = dueDate ?: System.currentTimeMillis()
@@ -219,7 +235,7 @@ fun TaskEditorBottomSheet(
         }
 
         if (showTimePicker && pendingReminderDate != null) {
-            OpenTimePicker(
+            TimePickerDialog(
                 selectedDateMillis = pendingReminderDate!!,
                 onTimeSelected = { finalMillis -> reminderDate = finalMillis },
                 onDismiss = {
@@ -227,9 +243,6 @@ fun TaskEditorBottomSheet(
                     pendingReminderDate = null
                 }
             )
-
         }
     }
 }
-
-

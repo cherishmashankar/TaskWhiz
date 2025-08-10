@@ -36,7 +36,6 @@ fun ScheduleSection(
     onClearReminder: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween

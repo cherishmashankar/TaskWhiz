@@ -1,5 +1,6 @@
 package com.example.taskwhiz.presentation.ui.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
@@ -16,48 +17,51 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Text
-import androidx.core.graphics.toColorInt
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun TaskTitleInput(
     title: String,
     onTitleChange: (String) -> Unit,
+    modifier: Modifier,
 ) {
     val focusManager = LocalFocusManager.current
 
-    BasicTextField(
-        value = title,
-        onValueChange = { newText ->
-            // Restrict to one line (ignore newlines)
-            onTitleChange(newText.replace("\n", ""))
-        },
-        textStyle = TextStyle(
-            fontSize = 24.sp,       // Bigger, more focus
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        ),
-        singleLine = true,
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                // Clear focus when Enter is pressed
-                focusManager.clearFocus()
+        BasicTextField(
+            value = title,
+            onValueChange = { newText ->
+                // Restrict to one line (ignore newlines)
+                onTitleChange(newText.replace("\n", ""))
+            },
+            textStyle = TextStyle(
+                fontSize = 24.sp,       // Bigger, more focus
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    // Clear focus when Enter is pressed
+                    focusManager.clearFocus()
+                }
+            ),
+            modifier =  modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),  // Spacing instead of line
+            decorationBox = { innerTextField ->
+                if (title.isEmpty()) {
+                    Text(
+                        "Task Title",
+                        color = Color.Gray,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                innerTextField()
             }
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),  // Spacing instead of line
-        decorationBox = { innerTextField ->
-            if (title.isEmpty()) {
-                Text(
-                    "Task Title",
-                    color = Color.Gray,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            innerTextField()
-        }
-    )
-}
+        )
+    }
+
+
 

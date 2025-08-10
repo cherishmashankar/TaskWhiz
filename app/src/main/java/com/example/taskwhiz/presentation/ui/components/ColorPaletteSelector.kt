@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,20 +26,20 @@ fun ColorPaletteSelector(
 ) {
     val colors = listOf(
         "#FF6F61", // Coral
-        "#FFD166", // Warm Yellow
-        "#06D6A0", // Mint Green
+        "#FFB300", // Amber
+        "#2E7D32", // Mint Green
         "#118AB2", // Teal
         "#073B4C", // Navy
         "#EF476F", // Pink Red
-        "#8E44AD"  // Purple
+        "#8E44AD", // Purple
+        "#F4A261", // Soft Orange
+        "#06D6A0"  // Bright Aqua Green
     )
-
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
     ) {
         items(colors) { color ->
             val parsedColor = Color(color.toColorInt())
@@ -46,12 +47,12 @@ fun ColorPaletteSelector(
 
             Box(
                 modifier = Modifier
-                    .size(if (isSelected) 50.dp else 44.dp) // Highlight selection
+                    .size(if (isSelected) 44.dp else 40.dp) // Highlight selection
                     .clip(CircleShape)
                     .background(parsedColor)
                     .border(
-                        width = if (isSelected) 5.dp else 1.dp,
-                        color = if (isSelected) Color.Black.copy(alpha = 0.7f) else Color.Gray.copy(
+                        width = if (isSelected) 4.dp else 1.dp,
+                        color = if (isSelected) MaterialTheme.colorScheme.onSurface else Color.Gray.copy(
                             alpha = 0.3f
                         ),
                         shape = CircleShape

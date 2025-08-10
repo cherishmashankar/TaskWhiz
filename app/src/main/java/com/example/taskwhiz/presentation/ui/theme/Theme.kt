@@ -12,9 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 
-
-
-
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF9B6DFF),      // Vibrant purple
     onPrimary = Color.White,
@@ -48,7 +45,7 @@ fun TaskWhizTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else DarkColorScheme
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,
