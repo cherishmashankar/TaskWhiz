@@ -17,6 +17,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.SolidColor
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
@@ -33,6 +34,7 @@ fun TaskTitleInput(
                 // Restrict to one line (ignore newlines)
                 onTitleChange(newText.replace("\n", ""))
             },
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
             textStyle = TextStyle(
                 fontSize = 24.sp,       // Bigger, more focus
                 fontWeight = FontWeight.Bold,

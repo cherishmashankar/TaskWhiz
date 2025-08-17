@@ -41,7 +41,7 @@ fun CompletionToggle(
 
     Box(
         modifier = Modifier
-            .size(24.dp)
+            .size(28.dp)
             .scale(scale)
             .clip(CircleShape)
             .border(
@@ -58,7 +58,7 @@ fun CompletionToggle(
                 imageVector = Icons.Default.Check,
                 contentDescription = "Completed",
                 tint = Color.White,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(22.dp)
             )
         }
     }

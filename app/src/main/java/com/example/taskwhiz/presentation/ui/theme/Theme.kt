@@ -17,13 +17,17 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = Color.White,
     background = Color(0xFFF4F1FA),   // Soft lavender background
     onBackground = Color(0xFF1E1A22), // Dark text
-    surface = Color(0xFFFFFFFF),      // Card surface
+    surface = Color(0xFFFCFCFC),      // Card surface
     onSurface = Color(0xFF1E1A22),
     secondary = Color(0xFFB794F6),    // Lighter purple accent
     onSecondary = Color.White,
     error = Color(0xFFE57373),
     onError = Color.White,
-    surfaceVariant = Color(0xFFF4F1FA)
+    surfaceVariant = Color(0xE6F4F1FA),
+    tertiaryContainer =Color(0xFFFFB300),
+    onTertiaryContainer = Color(0xFF3E2723)
+
+
 )
 
 
@@ -38,14 +42,16 @@ private val DarkColorScheme = darkColorScheme(
     onSecondary = Color.Black,
     error = Color(0xFFEF9A9A),
     onError = Color.Black,
-    surfaceVariant = Color(0xFF2A2633)
+    surfaceVariant = Color(0xFF2A2633),
+    tertiaryContainer = Color(0xFFFFB300),
+    onTertiaryContainer = Color.Black
 )
 @Composable
 fun TaskWhizTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = if (darkTheme) LightColorScheme else LightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,

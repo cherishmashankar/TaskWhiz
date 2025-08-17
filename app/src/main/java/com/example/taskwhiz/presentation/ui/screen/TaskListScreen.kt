@@ -218,8 +218,8 @@ fun TaskListScreen(viewModel: TaskViewModel) {
 
                         if (index < filteredTasks.lastIndex) {
                             HorizontalDivider(
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                                modifier = Modifier.padding(start = 52.dp)
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                                modifier = Modifier.padding(horizontal = 16.dp)
                             )
                         }
                     }

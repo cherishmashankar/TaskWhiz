@@ -1,9 +1,7 @@
 package com.example.taskwhiz.presentation.ui.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
-
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -12,52 +10,62 @@ import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
-
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-
-
 
 @Composable
-fun SubtaskListEditor(
+fun SubtaskList(
     subtasks: List<String>,
     onSubtasksChange: (List<String>) -> Unit
 ) {
     val items = subtasks.ifEmpty { listOf("") }
-    val focusManager = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
+    val focusRequesters = remember(items.size) { List(items.size) { FocusRequester() } }
+    var focusTrigger by remember { mutableStateOf<Pair<Int, Boolean>?>(null) } // Pair<index, isNext>
+
+    // Move focus after list updates (add/remove)
+    LaunchedEffect(focusTrigger) {
+        focusTrigger?.let { (index, isNext) ->
+            if (isNext) {
+                focusRequesters.getOrNull(index + 1)?.requestFocus()
+            } else {
+                focusRequesters.getOrNull(index - 1)?.requestFocus()
+            }
+        }
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
     ) {
         items.forEachIndexed { index, text ->
-            val focusRequester = remember { FocusRequester() }
-
             Row(
-                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 2.dp)
                     .clickable {
-                        focusRequester.requestFocus()
+                        focusRequesters.getOrNull(index)?.requestFocus()
                         keyboard?.show()
                     }
             ) {
@@ -76,10 +84,11 @@ fun SubtaskListEditor(
                         val copy = items.toMutableList().apply { this[index] = updated }
                         onSubtasksChange(copy)
                     },
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                     textStyle = TextStyle(
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onBackground
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.onSurface
                     ),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(
@@ -91,13 +100,9 @@ fun SubtaskListEditor(
                             if (text.isNotBlank() && isLastItem) {
                                 val copy = items.toMutableList().apply { add(index + 1, "") }
                                 onSubtasksChange(copy)
-
-                                // TODO focus does not move to next point
-                                focusManager.moveFocus(FocusDirection.Down)
-                            } else {
-                                // If not last, just move focus to next existing bullet
-                                // TODO focus does not move to next point
-                                focusManager.moveFocus(FocusDirection.Down)
+                                focusTrigger = index to true // focus next after recomposition
+                            } else if (index < items.lastIndex) {
+                                focusRequesters.getOrNull(index + 1)?.requestFocus()
                             }
                         }
                     ),
@@ -114,17 +119,17 @@ fun SubtaskListEditor(
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .focusRequester(focusRequester)
-                        .focusable()
+                        .focusRequester(focusRequesters[index])
+                        .focusProperties {
+                            next = focusRequesters.getOrNull(index + 1) ?: FocusRequester.Default
+                            previous = focusRequesters.getOrNull(index - 1) ?: FocusRequester.Default
+                        }
                         .onKeyEvent {
-                            if (it.key == Key.Backspace
-                            ) {
+                            if (it.key == Key.Backspace && it.type == KeyEventType.KeyUp) {
                                 if (text.isEmpty() && items.size > 1) {
                                     val copy = items.toMutableList().apply { removeAt(index) }
                                     onSubtasksChange(copy)
-
-                                    // TODO focus does not move to previous point
-                                    focusManager.moveFocus(FocusDirection.Up)
+                                    focusTrigger = index to false // focus previous after recomposition
                                     return@onKeyEvent true
                                 }
                             }
@@ -135,3 +140,5 @@ fun SubtaskListEditor(
         }
     }
 }
+
+

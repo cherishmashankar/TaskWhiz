@@ -31,7 +31,6 @@ fun ColorPaletteSelector(
         "#118AB2", // Teal
         "#073B4C", // Navy
         "#EF476F", // Pink Red
-        "#8E44AD", // Purple
         "#F4A261", // Soft Orange
         "#06D6A0"  // Bright Aqua Green
     )

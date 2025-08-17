@@ -33,29 +33,36 @@ fun TaskItem(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
-        CompletionToggle(
-            isCompleted = task.isCompleted,
-            colorHex = task.colorCode,
-            onToggle = onToggle
-        )
-
-        Spacer(Modifier.width(12.dp))
-
         Column(Modifier.weight(1f)) {
-            Text(
-                text = task.title,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    textDecoration = if (task.isCompleted) TextDecoration.LineThrough else TextDecoration.None,
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(Modifier.height(2.dp))
-            Text(
-                text = formattedTime,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                CompletionToggle(
+                    isCompleted = task.isCompleted,
+                    colorHex = task.colorCode,
+                    onToggle = onToggle
+                )
+                Spacer(Modifier.width(16.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        text = task.title,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            textDecoration = if (task.isCompleted) TextDecoration.LineThrough else TextDecoration.None
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = formattedTime,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+            TaskStatusBadges(
+                dueDate = task.dueAt,
+                reminderDate = task.reminderAt,
+                isHighPriority = (task.priorityLevel == 1),
             )
         }
 
@@ -65,5 +72,9 @@ fun TaskItem(
         )
     }
 }
+
+
+
+
 
 

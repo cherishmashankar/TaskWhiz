@@ -2,24 +2,24 @@ package com.example.taskwhiz.presentation.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import com.example.taskwhiz.domain.model.Task
-
+import kotlinx.coroutines.android.awaitFrame
 
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -46,6 +46,7 @@ fun TaskEditorBottomSheet(
     var pendingReminderDate by remember { mutableStateOf<Long?>(null) }
 
     var showTitleError by remember { mutableStateOf(false) }
+    var taskPriority by remember { mutableStateOf(task?.priorityLevel ?: 0) } // 0=no, 1=high
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -53,6 +54,18 @@ fun TaskEditorBottomSheet(
         modifier = Modifier.fillMaxSize(),
         contentColor = MaterialTheme.colorScheme.onBackground
     ) {
+        val titleFocusRequester = remember { FocusRequester() }
+        val keyboard = LocalSoftwareKeyboardController.current
+
+        
+        LaunchedEffect(sheetState.isVisible) {
+            if (sheetState.isVisible && task == null) {
+                awaitFrame()
+                titleFocusRequester.requestFocus()
+                keyboard?.show()
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -62,35 +75,36 @@ fun TaskEditorBottomSheet(
         ) {
             val listState = rememberLazyListState()
 
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TaskTitleInput(
+                    title = title,
+                    onTitleChange = { title = it },
+                    modifier = Modifier.weight(1f).focusRequester(titleFocusRequester)
+                )
+
+                TaskEditorOverflowMenu(
+                    hasDue = dueDate != null,
+                    hasReminder = reminderDate != null,
+                    onRequestSetDueDate = { showDatePickerForDue = true },
+                    onRequestSetReminder = { showDatePickerForReminder = true },
+                    onClearDueDate = { dueDate = null },
+                    onClearReminder = { reminderDate = null },
+                    hasHighPriority = (taskPriority == 1),
+                    onSetHighPriority = { taskPriority = 1 },
+                    onClearPriority = { taskPriority = 0 }
+                )
+            }
+
             LazyColumn(
                 state = listState,
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(bottom = 8.dp)
             ) {
-                // Title + overflow
-                item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        TaskTitleInput(
-                            title = title,
-                            onTitleChange = { title = it },
-                            modifier = Modifier.weight(1f)
-                        )
-                        TaskEditorOverflowMenu(
-                            hasDue = dueDate != null,
-                            hasReminder = reminderDate != null,
-                            onRequestSetDueDate = { showDatePickerForDue = true },
-                            onRequestSetReminder = { showDatePickerForReminder = true },
-                            onClearDueDate = { dueDate = null },
-                            onClearReminder = { reminderDate = null }
-                        )
-                    }
-                }
 
-                // GROUPED interactive section (like the mock)
                 item {
                     Card(
                         shape = RoundedCornerShape(20.dp),
@@ -111,18 +125,15 @@ fun TaskEditorBottomSheet(
                                 selectedColor = selectedColor,
                                 onColorChange = { selectedColor = it }
                             )
-
-                            ScheduleSection(
+                            TaskEditorMoreOptionSection(
                                 dueDate = dueDate,
                                 reminderDate = reminderDate,
+                                isHighPriority = (taskPriority == 1),
                                 onSetDueClick = { showDatePickerForDue = true },
-                                onClearDue = { dueDate = null },
                                 onSetReminderClick = { showDatePickerForReminder = true },
-                                onClearReminder = { reminderDate = null },
                                 modifier = Modifier.fillMaxWidth()
                             )
-
-                            SubtaskListEditor(
+                            SubtaskList(
                                 subtasks = subtasks,
                                 onSubtasksChange = { subtasks = it }
                             )
@@ -131,7 +142,6 @@ fun TaskEditorBottomSheet(
                     }
                 }
             }
-
 
             Button(
                 onClick = {
@@ -146,7 +156,7 @@ fun TaskEditorBottomSheet(
                         taskItems = subtasks.filter { it.isNotBlank() },
                         createdAt = task?.createdAt ?: System.currentTimeMillis(),
                         isMessy = task?.isMessy ?: true,
-                        priorityLevel = task?.priorityLevel ?: 0,
+                        priorityLevel = taskPriority,
                         dueAt = dueDate,
                         reminderAt = reminderDate
                     )
