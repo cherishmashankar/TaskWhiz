@@ -7,12 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.taskwhiz.domain.model.Task
+import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import com.example.taskwhiz.utils.toFullDateTime
 
 @Composable
@@ -26,12 +24,15 @@ fun TaskItem(
     val formattedTime = remember(task.lastModifiedAt) {
         task.lastModifiedAt.toFullDateTime()
     }
+    val showBadges = task.dueAt != null || task.reminderAt != null || task.priorityLevel == 1
 
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(
+                horizontal = AppDimens.PaddingLarge,
+                vertical = AppDimens.TaskItemPaddingVertical
+            ),
     ) {
         Column(Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -40,17 +41,17 @@ fun TaskItem(
                     colorHex = task.colorCode,
                     onToggle = onToggle
                 )
-                Spacer(Modifier.width(16.dp))
+                Spacer(Modifier.width(AppDimens.PaddingLarge))
                 Column(Modifier.weight(1f)) {
                     Text(
                         text = task.title,
                         style = MaterialTheme.typography.titleMedium.copy(
-                            textDecoration = if (task.isCompleted) TextDecoration.LineThrough else TextDecoration.None
+                            textDecoration = TextDecoration.None,
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Spacer(Modifier.height(2.dp))
+                    Spacer(Modifier.height(AppDimens.TaskTitleTimestampSpacing))
                     Text(
                         text = formattedTime,
                         style = MaterialTheme.typography.bodySmall,
@@ -58,12 +59,14 @@ fun TaskItem(
                     )
                 }
             }
-            Spacer(Modifier.height(16.dp))
-            TaskStatusBadges(
-                dueDate = task.dueAt,
-                reminderDate = task.reminderAt,
-                isHighPriority = (task.priorityLevel == 1),
-            )
+            if (showBadges) {
+                Spacer(Modifier.height(AppDimens.TaskBadgesSpacing))
+                TaskStatusBadges(
+                    dueDate = task.dueAt,
+                    reminderDate = task.reminderAt,
+                    isHighPriority = (task.priorityLevel == 1),
+                )
+            }
         }
 
         TaskOverflowMenu(
@@ -72,8 +75,6 @@ fun TaskItem(
         )
     }
 }
-
-
 
 
 

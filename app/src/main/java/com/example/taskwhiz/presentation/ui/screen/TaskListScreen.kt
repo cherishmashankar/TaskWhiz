@@ -39,11 +39,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+
 import com.example.taskwhiz.R
 import com.example.taskwhiz.domain.model.Task
 import com.example.taskwhiz.presentation.ui.components.TaskEditorBottomSheet
 import com.example.taskwhiz.presentation.ui.components.TaskItem
+import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -69,14 +70,14 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                     selectedTask = null
                     showSheet = true
                 },
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(AppDimens.PaddingLarge),
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_task_add),
                     contentDescription = "Add Task",
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(AppDimens.IconLarge + AppDimens.PaddingSmall) // 28dp
                 )
             }
         }
@@ -87,14 +88,14 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(AppDimens.PaddingXLarge + AppDimens.PaddingLarge)) // 32dp
 
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                shape = RoundedCornerShape(25),
-                elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+                    .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingSmall),
+                shape = RoundedCornerShape(AppDimens.CornerLarge),
+                elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.PaddingLarge), // 16dp
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant
                 )
@@ -139,8 +140,8 @@ fun TaskListScreen(viewModel: TaskViewModel) {
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingXSmall),
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.PaddingSmall)
             ) {
                 items(statusFilters.size) { i ->
                     val filter = statusFilters[i]
@@ -152,12 +153,13 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 }
             }
 
+            // --- Optional Date Filter ---
             /*
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingXSmall),
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.PaddingSmall)
             ) {
                 items(dateFilters.size) { i ->
                     val filter = dateFilters[i]
@@ -193,9 +195,9 @@ fun TaskListScreen(viewModel: TaskViewModel) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                    .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingSmall),
+                shape = RoundedCornerShape(AppDimens.CornerMedium),
+                elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.PaddingSmall),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
@@ -219,14 +221,14 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                         if (index < filteredTasks.lastIndex) {
                             HorizontalDivider(
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-                                modifier = Modifier.padding(horizontal = 16.dp)
+                                modifier = Modifier.padding(horizontal = AppDimens.PaddingLarge)
                             )
                         }
                     }
                 }
             }
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(AppDimens.PaddingXLarge + AppDimens.PaddingLarge)) // 32dp
         }
     }
 

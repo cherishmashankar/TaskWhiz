@@ -5,23 +5,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.Icon
-import androidx.compose.material3.InputChip
-import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.SuggestionChipDefaults
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.taskwhiz.R
+import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import com.example.taskwhiz.utils.toDateOnly
 import com.example.taskwhiz.utils.toFullDateTime
 
@@ -36,13 +30,12 @@ fun TaskStatusBadges(
     val hasAnything = (dueDate != null || reminderDate != null || isHighPriority)
     if (!hasAnything) return
 
-
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(AppDimens.BadgeSpacingRow),
         verticalAlignment = Alignment.CenterVertically,
-        contentPadding = PaddingValues(horizontal = 0.dp)
+        contentPadding = PaddingValues(horizontal = 0.dp),
+        modifier = modifier
     ) {
-
         if (dueDate != null) {
             item {
                 StatusBadge(
@@ -66,12 +59,15 @@ fun TaskStatusBadges(
         if (isHighPriority) {
             item {
                 StatusBadge(
-                    text = "High Priority",
-                    icon = Icons.Default.StarBorder,
-                    iconTint = MaterialTheme.colorScheme.primary
+                    text = stringResource(R.string.high_priority),
+                    icon = Icons.Default.Star,
+                    iconTint = MaterialTheme.colorScheme.tertiaryContainer,
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.1f)
                 )
             }
         }
     }
 }
+
+
 

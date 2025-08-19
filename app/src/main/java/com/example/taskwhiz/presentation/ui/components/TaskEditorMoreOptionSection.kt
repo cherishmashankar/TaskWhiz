@@ -11,13 +11,14 @@ import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
+import com.example.taskwhiz.R
+import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import com.example.taskwhiz.utils.toDateOnly
 import com.example.taskwhiz.utils.toFullDateTime
 
@@ -32,21 +33,20 @@ fun TaskEditorMoreOptionSection(
     onSetReminderClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // If nothing to show, collapse gracefully
     val hasAnything = (dueDate != null || reminderDate != null || isHighPriority)
     if (!hasAnything) return
 
     LazyRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(AppDimens.PaddingMedium),
         verticalAlignment = Alignment.CenterVertically,
-        contentPadding = PaddingValues(horizontal = 4.dp)
+        contentPadding = PaddingValues(horizontal = AppDimens.PaddingSmall)
     ) {
         if (dueDate != null) {
             item {
                 InputChip(
                     selected = true,
-                    onClick = onSetDueClick, // tap to edit
+                    onClick = onSetDueClick,
                     label = { Text(dueDate.toDateOnly()) },
                     leadingIcon = {
                         Icon(
@@ -66,7 +66,7 @@ fun TaskEditorMoreOptionSection(
             item {
                 InputChip(
                     selected = true,
-                    onClick = onSetReminderClick, // tap to edit
+                    onClick = onSetReminderClick,
                     label = { Text(reminderDate.toFullDateTime()) },
                     leadingIcon = {
                         Icon(
@@ -76,9 +76,7 @@ fun TaskEditorMoreOptionSection(
                         )
                     },
                     colors = InputChipDefaults.inputChipColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-
-
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
                     )
                 )
             }
@@ -88,22 +86,22 @@ fun TaskEditorMoreOptionSection(
             item {
                 InputChip(
                     selected = true,
-                    onClick = onSetReminderClick, // tap to edit
-                    label = { Text("High Priority") },
+                    onClick = onSetReminderClick,
+                    label = { Text(stringResource(R.string.high_priority)) },
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.StarBorder,
-                            contentDescription = "High Priority",
-                            tint = MaterialTheme.colorScheme.primary
+                            imageVector = Icons.Default.Star,
+                            contentDescription = stringResource(R.string.high_priority),
+                            tint = MaterialTheme.colorScheme.tertiaryContainer
                         )
                     },
                     colors = InputChipDefaults.inputChipColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant,
-
-                        )
+                        selectedContainerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.1f)
+                    )
                 )
-
             }
         }
     }
 }
+

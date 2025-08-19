@@ -13,39 +13,39 @@ import androidx.compose.ui.graphics.Color
 
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF9B6DFF),      // Vibrant purple
+    primary = Color(0xFF6750A4),      // Deep modern purple (Material baseline)
     onPrimary = Color.White,
-    background = Color(0xFFF4F1FA),   // Soft lavender background
-    onBackground = Color(0xFF1E1A22), // Dark text
-    surface = Color(0xFFFCFCFC),      // Card surface
+    background = Color(0xFFFAF9FC),   // Neutral off-white with a hint of lavender
+    onBackground = Color(0xFF1A1A1A), // High contrast dark text
+    surface = Color(0xFFFFFFFF),      // Pure white card surfaces
     onSurface = Color(0xFF1E1A22),
-    secondary = Color(0xFFB794F6),    // Lighter purple accent
+    secondary = Color(0xFF9C27B0),    // Rich accent purple (vivid but controlled)
     onSecondary = Color.White,
-    error = Color(0xFFE57373),
+    error = Color(0xFFB3261E),        // Accessible red (Material baseline)
     onError = Color.White,
-    surfaceVariant = Color(0xE6F4F1FA),
-    tertiaryContainer =Color(0xFFFFB300),
+    surfaceVariant = Color(0xFFE7E0EC), // Muted lavender-gray for contrast sections
+    onSurfaceVariant = Color(0xFF49454F),
+    tertiaryContainer = Color(0xFFFFB300), // Warm amber accent
     onTertiaryContainer = Color(0xFF3E2723)
-
-
 )
-
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFB794F6),       // Lighter purple for dark backgrounds
-    onPrimary = Color.Black,
-    background = Color(0xFF1C1A23),    // Deep purple background
-    onBackground = Color(0xFFEDE7F6),  // Soft light text
-    surface = Color(0xFF2B2733),       // Slightly elevated surface
-    onSurface = Color(0xFFEDE7F6),
-    secondary = Color(0xFF9B6DFF),     // Vibrant accent
+    primary = Color(0xFFD0BCFF),      // Bright violet for contrast
+    onPrimary = Color(0xFF381E72),    // Dark violet text over light purple
+    background = Color(0xFF121212),   // True dark mode background
+    onBackground = Color(0xFFECE6F0), // Soft lavender-white text
+    surface = Color(0xFF1E1E1E),      // Elevated card surfaces
+    onSurface = Color(0xFFECE6F0),
+    secondary = Color(0xFF7C4DFF),    // Bold purple accent
     onSecondary = Color.Black,
-    error = Color(0xFFEF9A9A),
-    onError = Color.Black,
-    surfaceVariant = Color(0xFF2A2633),
-    tertiaryContainer = Color(0xFFFFB300),
-    onTertiaryContainer = Color.Black
+    error = Color(0xFFF2B8B5),        // Lighter red for dark mode
+    onError = Color(0xFF601410),
+    surfaceVariant = Color(0xFF2C2C2C), // Layer separation
+    onSurfaceVariant = Color(0xFFCAC4D0),
+    tertiaryContainer = Color(0xFFFFD54F), // Warm golden highlight
+    onTertiaryContainer = Color(0xFF1A1200)
 )
+
 @Composable
 fun TaskWhizTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

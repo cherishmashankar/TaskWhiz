@@ -23,13 +23,12 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.taskwhiz.R
+import com.example.taskwhiz.presentation.ui.theme.AppDimens
 
 @Composable
 fun SubtaskList(
@@ -39,7 +38,7 @@ fun SubtaskList(
     val items = subtasks.ifEmpty { listOf("") }
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequesters = remember(items.size) { List(items.size) { FocusRequester() } }
-    var focusTrigger by remember { mutableStateOf<Pair<Int, Boolean>?>(null) } // Pair<index, isNext>
+    var focusTrigger by remember { mutableStateOf<Pair<Int, Boolean>?>(null) }
 
     // Move focus after list updates (add/remove)
     LaunchedEffect(focusTrigger) {
@@ -53,7 +52,7 @@ fun SubtaskList(
     }
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(AppDimens.SubtaskRowSpacing),
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
@@ -63,7 +62,7 @@ fun SubtaskList(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 2.dp)
+                    .padding(vertical = AppDimens.SubtaskRowPaddingVertical)
                     .clickable {
                         focusRequesters.getOrNull(index)?.requestFocus()
                         keyboard?.show()
@@ -74,8 +73,8 @@ fun SubtaskList(
                     contentDescription = null,
                     tint = Color.Gray,
                     modifier = Modifier
-                        .size(24.dp)
-                        .padding(end = 8.dp)
+                        .size(AppDimens.SubtaskIconSize)
+                        .padding(end = AppDimens.SubtaskIconSpacing)
                 )
 
                 BasicTextField(
@@ -85,22 +84,18 @@ fun SubtaskList(
                         onSubtasksChange(copy)
                     },
                     cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-                    textStyle = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Normal,
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface
                     ),
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Next
-                    ),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = {
                             val isLastItem = index == items.lastIndex
                             if (text.isNotBlank() && isLastItem) {
                                 val copy = items.toMutableList().apply { add(index + 1, "") }
                                 onSubtasksChange(copy)
-                                focusTrigger = index to true // focus next after recomposition
+                                focusTrigger = index to true
                             } else if (index < items.lastIndex) {
                                 focusRequesters.getOrNull(index + 1)?.requestFocus()
                             }
@@ -109,10 +104,11 @@ fun SubtaskList(
                     decorationBox = { innerTextField ->
                         if (text.isEmpty()) {
                             Text(
-                                "Add subtask…",
+                                text = stringResource(R.string.hint_add_subtask),
                                 color = Color.Gray.copy(alpha = 0.6f),
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Medium
+                                )
                             )
                         }
                         innerTextField()
@@ -129,7 +125,7 @@ fun SubtaskList(
                                 if (text.isEmpty() && items.size > 1) {
                                     val copy = items.toMutableList().apply { removeAt(index) }
                                     onSubtasksChange(copy)
-                                    focusTrigger = index to false // focus previous after recomposition
+                                    focusTrigger = index to false
                                     return@onKeyEvent true
                                 }
                             }
@@ -140,5 +136,6 @@ fun SubtaskList(
         }
     }
 }
+
 
 

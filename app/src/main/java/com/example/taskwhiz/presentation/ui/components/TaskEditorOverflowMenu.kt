@@ -17,6 +17,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.stringResource
+import com.example.taskwhiz.R
 
 @Composable
 fun TaskEditorOverflowMenu(
@@ -37,7 +39,7 @@ fun TaskEditorOverflowMenu(
         IconButton(onClick = { expanded = true }) {
             Icon(
                 imageVector = Icons.Filled.MoreVert,
-                contentDescription = "More Options"
+                contentDescription = stringResource(R.string.more_options)
             )
         }
 
@@ -54,7 +56,10 @@ fun TaskEditorOverflowMenu(
                         tint = MaterialTheme.colorScheme.primary
                     )
                 },
-                text = { Text(if (hasDue) "Edit Due Date" else "Add Due Date") },
+                text = { Text(if (hasDue)
+                    stringResource(R.string.edit_due_date)
+                else
+                    stringResource(R.string.add_due_date)) },
                 onClick = {
                     expanded = false
                     onRequestSetDueDate()
@@ -68,7 +73,7 @@ fun TaskEditorOverflowMenu(
                         tint = MaterialTheme.colorScheme.primary
                     )
                 },
-                text = { Text(if (hasReminder) "Edit Reminder" else "Set Reminder") },
+                text = { Text(if (hasReminder) stringResource(R.string.edit_reminder) else stringResource(R.string.set_reminder)) },
                 onClick = {
                     expanded = false
                     onRequestSetReminder()
@@ -86,7 +91,7 @@ fun TaskEditorOverflowMenu(
                             tint = MaterialTheme.colorScheme.error
                         )
                     },
-                    text = { Text("Remove Priority", color = MaterialTheme.colorScheme.error) },
+                    text = { Text(stringResource(R.string.remove_priority), color = MaterialTheme.colorScheme.error) },
                     onClick = {
                         expanded = false
                         onClearPriority()
@@ -101,7 +106,8 @@ fun TaskEditorOverflowMenu(
                             tint = MaterialTheme.colorScheme.primary
                         )
                     },
-                    text = { Text("Set High Priority") },
+
+                    text = { Text(stringResource(R.string.set_high_priority)) },
                     onClick = {
                         expanded = false
                         onSetHighPriority()
@@ -122,7 +128,7 @@ fun TaskEditorOverflowMenu(
                             tint = MaterialTheme.colorScheme.error
                         )
                     },
-                    text = { Text("Remove Due Date", color = MaterialTheme.colorScheme.error) },
+                    text = { Text(stringResource(R.string.remove_due_date), color = MaterialTheme.colorScheme.error) },
                     onClick = {
                         expanded = false
                         onClearDueDate()
@@ -138,7 +144,7 @@ fun TaskEditorOverflowMenu(
                             tint = MaterialTheme.colorScheme.error
                         )
                     },
-                    text = { Text("Remove Reminder", color = MaterialTheme.colorScheme.error) },
+                    text = { Text(stringResource(R.string.remove_reminder), color = MaterialTheme.colorScheme.error) },
                     onClick = {
                         expanded = false
                         onClearReminder()

@@ -1,28 +1,34 @@
 package com.example.taskwhiz.presentation.ui.components
 
 
-import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
-
+import com.example.taskwhiz.R
+import com.example.taskwhiz.presentation.ui.theme.AppDimens
 
 @Composable
 fun CompletionToggle(
@@ -30,39 +36,50 @@ fun CompletionToggle(
     colorHex: String,
     onToggle: () -> Unit
 ) {
-    val transition = updateTransition(targetState = isCompleted, label = "CompletionTransition")
     val taskColor = Color(colorHex.toColorInt())
-    val color by transition.animateColor(label = "ColorTransition") { state ->
-        if (state) taskColor else taskColor
-    }
-    val scale by transition.animateFloat(label = "ScaleTransition") { state ->
-        if (state) 1.1f else 1f
-    }
+
+    val bgColor by animateColorAsState(
+        if (isCompleted) taskColor else Color.Transparent,
+        label = "bg"
+    )
+    val borderColor by animateColorAsState(
+        if (isCompleted) taskColor else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+        label = "border"
+    )
+    val borderWidth by animateDpAsState(
+        if (isCompleted) 0.dp else AppDimens.BorderNormal,
+        label = "bw"
+    )
+    val shape = RoundedCornerShape(AppDimens.CornerSmall)
 
     Box(
         modifier = Modifier
-            .size(28.dp)
-            .scale(scale)
-            .clip(CircleShape)
-            .border(
-                width = if (isCompleted) 0.dp else 4.dp,
-                color = if (isCompleted) Color.Transparent else color,
-                shape = CircleShape
-            )
-            .background(if (isCompleted) color else Color.Transparent, CircleShape)
-            .clickable { onToggle() },
+            .size(AppDimens.ToggleSize)
+            .clip(shape)
+            .background(bgColor, shape)
+            .border(borderWidth, borderColor, shape)
+            .toggleable(
+                value = isCompleted,
+                onValueChange = { onToggle() },
+                role = Role.Checkbox,
+            ),
         contentAlignment = Alignment.Center
     ) {
-        if (isCompleted) {
+        AnimatedVisibility(
+            visible = isCompleted,
+            enter = scaleIn() + fadeIn(),
+            exit = fadeOut()
+        ) {
             Icon(
                 imageVector = Icons.Default.Check,
-                contentDescription = "Completed",
+                contentDescription = stringResource(R.string.task_completed),
                 tint = Color.White,
-                modifier = Modifier.size(22.dp)
+                modifier = Modifier.size(AppDimens.IconSmall)
             )
         }
     }
 }
+
 
 
 

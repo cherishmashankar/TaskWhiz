@@ -14,11 +14,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
+import com.example.taskwhiz.R
 import com.example.taskwhiz.domain.model.Task
+import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import kotlinx.coroutines.android.awaitFrame
 
 
@@ -57,7 +60,6 @@ fun TaskEditorBottomSheet(
         val titleFocusRequester = remember { FocusRequester() }
         val keyboard = LocalSoftwareKeyboardController.current
 
-        
         LaunchedEffect(sheetState.isVisible) {
             if (sheetState.isVisible && task == null) {
                 awaitFrame()
@@ -71,7 +73,10 @@ fun TaskEditorBottomSheet(
                 .fillMaxSize()
                 .imePadding()
                 .navigationBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(
+                    horizontal = AppDimens.PaddingLarge,
+                    vertical = AppDimens.PaddingMedium
+                )
         ) {
             val listState = rememberLazyListState()
 
@@ -82,7 +87,9 @@ fun TaskEditorBottomSheet(
                 TaskTitleInput(
                     title = title,
                     onTitleChange = { title = it },
-                    modifier = Modifier.weight(1f).focusRequester(titleFocusRequester)
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusRequester(titleFocusRequester)
                 )
 
                 TaskEditorOverflowMenu(
@@ -101,25 +108,24 @@ fun TaskEditorBottomSheet(
             LazyColumn(
                 state = listState,
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(bottom = 8.dp)
+                verticalArrangement = Arrangement.spacedBy(AppDimens.PaddingLarge),
+                contentPadding = PaddingValues(bottom = AppDimens.PaddingMedium)
             ) {
-
                 item {
                     Card(
-                        shape = RoundedCornerShape(20.dp),
+                        shape = RoundedCornerShape(AppDimens.CornerLarge),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surface
                         ),
                         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Spacer(Modifier.height(20.dp))
+                        Spacer(Modifier.height(AppDimens.PaddingLarge))
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                                .padding(AppDimens.PaddingLarge),
+                            verticalArrangement = Arrangement.spacedBy(AppDimens.PaddingLarge)
                         ) {
                             ColorPaletteSelector(
                                 selectedColor = selectedColor,
@@ -137,7 +143,7 @@ fun TaskEditorBottomSheet(
                                 subtasks = subtasks,
                                 onSubtasksChange = { subtasks = it }
                             )
-                            Spacer(Modifier.height(20.dp))
+                            Spacer(Modifier.height(AppDimens.PaddingLarge))
                         }
                     }
                 }
@@ -165,15 +171,18 @@ fun TaskEditorBottomSheet(
                 enabled = title.isNotBlank(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = AppDimens.PaddingSmall),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(selectedColor.toColorInt()),
                     disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(AppDimens.CornerMedium)
             ) {
                 Text(
-                    text = if (task == null) "Save Task" else "Update Task",
+                    text = if (task == null)
+                        stringResource(R.string.save_task)
+                    else
+                        stringResource(R.string.update_task),
                     color = if (title.isNotBlank()) Color.White
                     else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                     fontSize = 16.sp,
@@ -183,15 +192,15 @@ fun TaskEditorBottomSheet(
 
             if (showTitleError && title.isBlank()) {
                 Text(
-                    text = "Title cannot be empty",
+                    text = stringResource(R.string.error_empty_title),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(top = AppDimens.PaddingSmall)
                 )
             }
         }
 
-        // Due Date picker (date only)
+        // --- Date Pickers ---
         if (showDatePickerForDue) {
             val duePickerState = rememberDatePickerState(
                 initialSelectedDateMillis = dueDate ?: System.currentTimeMillis()
@@ -204,20 +213,18 @@ fun TaskEditorBottomSheet(
                             dueDate = duePickerState.selectedDateMillis
                             showDatePickerForDue = false
                         }
-                    ) { Text("OK") }
+                    ) { Text(stringResource(R.string.ok)) }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showDatePickerForDue = false }) { Text("Cancel") }
+                    TextButton(onClick = { showDatePickerForDue = false }) {
+                        Text(stringResource(R.string.cancel))
+                    }
                 }
             ) {
-                DatePicker(
-                    state = duePickerState,
-                    showModeToggle = true
-                )
+                DatePicker(state = duePickerState, showModeToggle = true)
             }
         }
 
-        // Reminder flow: pick date, then time
         if (showDatePickerForReminder) {
             val reminderPickerState = rememberDatePickerState(
                 initialSelectedDateMillis = reminderDate ?: System.currentTimeMillis()
@@ -231,16 +238,15 @@ fun TaskEditorBottomSheet(
                             showDatePickerForReminder = false
                             if (pendingReminderDate != null) showTimePicker = true
                         }
-                    ) { Text("Next") }
+                    ) { Text(stringResource(R.string.next)) }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showDatePickerForReminder = false }) { Text("Cancel") }
+                    TextButton(onClick = { showDatePickerForReminder = false }) {
+                        Text(stringResource(R.string.cancel))
+                    }
                 }
             ) {
-                DatePicker(
-                    state = reminderPickerState,
-                    showModeToggle = true
-                )
+                DatePicker(state = reminderPickerState, showModeToggle = true)
             }
         }
 
@@ -256,3 +262,5 @@ fun TaskEditorBottomSheet(
         }
     }
 }
+
+

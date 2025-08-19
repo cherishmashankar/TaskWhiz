@@ -8,6 +8,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.stringResource
+import com.example.taskwhiz.R
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +31,7 @@ fun TimePickerDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Select time") },
+        title = { Text(stringResource(R.string.select_time)) },
         text = { TimePicker(state = state) },
         confirmButton = {
             Button(onClick = {
@@ -43,11 +45,11 @@ fun TimePickerDialog(
                 onTimeSelected(outMillis)
                 onDismiss()
             }) {
-                Text("OK")
+                Text(stringResource(R.string.ok))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel))}
         }
     )
 }

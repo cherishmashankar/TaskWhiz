@@ -1,3 +1,45 @@
 <resources>
     <string name="app_name">TaskWhiz</string>
+    <string name="color_selected">Selected</string>
+    <string name="task_completed">Completed</string>
+    <string name="hint_add_subtask">Add subtask…</string>
+
+    <!-- Task Editor Bottom Sheet -->
+    <string name="save_task">Save Task</string>
+    <string name="update_task">Update Task</string>
+    <string name="title_error_empty">Title cannot be empty</string>
+
+    <!-- Dialog Buttons -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="next">Next</string>
+
+
+    <!-- Task Editor Overflow Menu -->
+    <string name="edit_due_date">Edit Due Date</string>
+    <string name="add_due_date">Add Due Date</string>
+    <string name="edit_reminder">Edit Reminder</string>
+    <string name="set_reminder">Set Reminder</string>
+    <string name="remove_priority">Remove Priority</string>
+    <string name="set_high_priority">Set High Priority</string>
+    <string name="remove_due_date">Remove Due Date</string>
+    <string name="remove_reminder">Remove Reminder</string>
+
+    <!-- Task Overflow Menu -->
+    <string name="more_options">More Options</string>
+    <string name="manage_task">Manage Task</string>
+    <string name="delete_task">Delete Task</string>
+
+    <!-- Task Status Badges -->
+    <string name="high_priority">High Priority</string>
+
+    <!-- Task Title Input -->
+    <string name="task_title_hint">Task Title</string>
+
+    <!-- Time Picker Dialog -->
+    <string name="select_time">Select time</string>
+
+    <string name="error_empty_title">Title cannot be empty</string>
+
+
 </resources>

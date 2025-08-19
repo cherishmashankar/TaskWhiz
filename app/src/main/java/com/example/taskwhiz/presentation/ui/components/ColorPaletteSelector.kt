@@ -16,8 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.toColorInt
+import com.example.taskwhiz.R
+import com.example.taskwhiz.presentation.ui.theme.AppDimens
 
 @Composable
 fun ColorPaletteSelector(
@@ -34,11 +36,11 @@ fun ColorPaletteSelector(
         "#F4A261", // Soft Orange
         "#06D6A0"  // Bright Aqua Green
     )
+
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(AppDimens.PaddingMedium),
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         items(colors) { color ->
             val parsedColor = Color(color.toColorInt())
@@ -46,31 +48,31 @@ fun ColorPaletteSelector(
 
             Box(
                 modifier = Modifier
-                    .size(if (isSelected) 44.dp else 40.dp) // Highlight selection
+                    .size(if (isSelected) AppDimens.ColorCircleSelected else AppDimens.ColorCircle)
                     .clip(CircleShape)
                     .background(parsedColor)
                     .border(
-                        width = if (isSelected) 4.dp else 1.dp,
-                        color = if (isSelected) MaterialTheme.colorScheme.onSurface else Color.Gray.copy(
-                            alpha = 0.3f
-                        ),
+                        width = if (isSelected) AppDimens.BorderThick else AppDimens.BorderThin,
+                        color = if (isSelected) MaterialTheme.colorScheme.onSurface
+                        else Color.Gray.copy(alpha = 0.3f),
                         shape = CircleShape
                     )
                     .clickable { onColorChange(color) }
-                    .padding(2.dp)
+                    .padding(AppDimens.PaddingXSmall)
             ) {
                 if (isSelected) {
                     Icon(
                         imageVector = Icons.Default.Check,
-                        contentDescription = "Selected",
+                        contentDescription = stringResource(R.string.color_selected),
                         tint = Color.White,
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .size(20.dp)
+                            .size(AppDimens.IconMedium)
                     )
                 }
             }
         }
     }
 }
+
 

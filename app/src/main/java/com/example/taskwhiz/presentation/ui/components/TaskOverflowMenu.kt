@@ -1,7 +1,6 @@
 package com.example.taskwhiz.presentation.ui.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -17,6 +16,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import com.example.taskwhiz.R
 
 @Composable
 fun TaskOverflowMenu(
@@ -31,7 +32,7 @@ fun TaskOverflowMenu(
             ) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = "More Options",
+               contentDescription = stringResource(R.string.more_options),
             )
         }
         DropdownMenu(
@@ -39,7 +40,7 @@ fun TaskOverflowMenu(
             onDismissRequest = { menuExpanded = false }
         ) {
             DropdownMenuItem(
-                text = { Text("Manage Task") },
+                text = { Text(stringResource(R.string.manage_task)) },
                 onClick = {
                     menuExpanded = false
                     onEditClick()
@@ -47,14 +48,14 @@ fun TaskOverflowMenu(
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Manage Task",
+                        contentDescription = stringResource(R.string.manage_task),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
             )
 
             DropdownMenuItem(
-                text = { Text("Delete Task") },
+                text = { Text(stringResource(R.string.delete_task)) },
                 onClick = {
                     menuExpanded = false
                     onDeleteClick()
@@ -62,7 +63,7 @@ fun TaskOverflowMenu(
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Task",
+                        contentDescription = stringResource(R.string.delete_task),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }

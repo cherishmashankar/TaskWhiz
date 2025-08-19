@@ -14,10 +14,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
+import com.example.taskwhiz.R
+import com.example.taskwhiz.presentation.ui.theme.AppDimens
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
@@ -31,7 +33,6 @@ fun TaskTitleInput(
         BasicTextField(
             value = title,
             onValueChange = { newText ->
-                // Restrict to one line (ignore newlines)
                 onTitleChange(newText.replace("\n", ""))
             },
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
@@ -50,16 +51,17 @@ fun TaskTitleInput(
             ),
             modifier =  modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp),  // Spacing instead of line
+                .padding(vertical = AppDimens.PaddingLarge),
             decorationBox = { innerTextField ->
                 if (title.isEmpty()) {
                     Text(
-                        "Task Title",
+                        text = stringResource(R.string.task_title_hint),
                         color = Color.Gray,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
+
                 innerTextField()
             }
         )

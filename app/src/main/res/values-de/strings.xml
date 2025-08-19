@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">TaskWhiz</string>
+    <string name="color_selected">Ausgewählt</string>
+    <string name="task_completed">Erledigt</string>
+    <string name="hint_add_subtask">Unteraufgabe hinzufügen…</string>
+
+
+    <!-- Task Editor Bottom Sheet -->
+    <string name="save_task">Aufgabe speichern</string>
+    <string name="update_task">Aufgabe aktualisieren</string>
+    <string name="title_error_empty">Titel darf nicht leer sein</string>
+
+    <!-- Dialog Buttons -->
+    <string name="ok">OK</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="next">Weiter</string>
+
+    <!-- Task Editor Overflow Menu -->
+    <string name="more_options">Weitere Optionen</string>
+    <string name="edit_due_date">Fälligkeitsdatum bearbeiten</string>
+    <string name="add_due_date">Fälligkeitsdatum hinzufügen</string>
+    <string name="edit_reminder">Erinnerung bearbeiten</string>
+    <string name="set_reminder">Erinnerung festlegen</string>
+    <string name="remove_priority">Priorität entfernen</string>
+    <string name="set_high_priority">Hohe Priorität festlegen</string>
+    <string name="remove_due_date">Fälligkeitsdatum entfernen</string>
+    <string name="remove_reminder">Erinnerung entfernen</string>
+
+    <!-- Task Overflow Menu -->
+    <string name="manage_task">Aufgabe bearbeiten</string>
+    <string name="delete_task">Aufgabe löschen</string>
+
+    <!-- Task Status Badges -->
+    <string name="high_priority">Hohe Priorität</string>
+
+    <!-- Task Title Input -->
+    <string name="task_title_hint">Aufgabentitel</string>
+
+    <!-- Time Picker Dialog -->
+    <string name="select_time">Uhrzeit auswählen</string>
+
+    <string name="error_empty_title">Titel darf nicht leer sein</string>
+
+
+</resources>
