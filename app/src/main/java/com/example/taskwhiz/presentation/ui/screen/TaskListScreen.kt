@@ -39,11 +39,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 
 import com.example.taskwhiz.R
 import com.example.taskwhiz.domain.model.Task
+import com.example.taskwhiz.presentation.ui.components.SectionTitle
 import com.example.taskwhiz.presentation.ui.components.TaskEditorBottomSheet
 import com.example.taskwhiz.presentation.ui.components.TaskItem
+import com.example.taskwhiz.presentation.ui.components.TaskSearchBar
 import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
 
@@ -62,6 +65,9 @@ fun TaskListScreen(viewModel: TaskViewModel) {
 
     val statusFilters = listOf("All", "Completed", "Pending")
     val dateFilters = listOf("All Dates", "Today", "This Week", "Overdue")
+
+    val language by viewModel.language.collectAsState()
+    val theme by viewModel.theme.collectAsState()
 
     Scaffold(
         floatingActionButton = {
@@ -90,52 +96,15 @@ fun TaskListScreen(viewModel: TaskViewModel) {
         ) {
             Spacer(Modifier.height(AppDimens.PaddingXLarge + AppDimens.PaddingLarge)) // 32dp
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingSmall),
-                shape = RoundedCornerShape(AppDimens.CornerLarge),
-                elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.PaddingLarge), // 16dp
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                )
-            ) {
-                TextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = {
-                        Text(
-                            "Search tasks",
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search",
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
-                        )
-                    },
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                        disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                        errorTextColor = MaterialTheme.colorScheme.error,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        errorContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent,
-                        cursorColor = MaterialTheme.colorScheme.primary,
-                        errorCursorColor = MaterialTheme.colorScheme.error
-                    )
-                )
-            }
+            TaskSearchBar(
+                query = searchQuery,
+                onQueryChange = { searchQuery = it },
+                currentLanguage = language,
+                currentTheme = theme,
+                onLanguageChange = { viewModel.changeLanguage(it) },
+                onThemeChange = { viewModel.changeTheme(it) }
+            )
+
 
             LazyRow(
                 modifier = Modifier
@@ -153,9 +122,8 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 }
             }
 
-            // --- Optional Date Filter ---
-            /*
-            LazyRow(
+
+/*            LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingXSmall),
@@ -169,8 +137,8 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                         label = { Text(filter) }
                     )
                 }
-            }
-            */
+            }*/
+
 
             // Filter + Search Logic
             val filteredTasks = tasks.filter { task ->
@@ -191,17 +159,13 @@ fun TaskListScreen(viewModel: TaskViewModel) {
 
                 matchesSearch && matchesStatus && matchesDate
             }
+            //SectionTitle(text = stringResource(id = R.string.title_filters))
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingSmall),
-                shape = RoundedCornerShape(AppDimens.CornerMedium),
-                elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.PaddingSmall),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            ) {
+
+            Spacer(Modifier.height(AppDimens.PaddingXLarge))
+            SectionTitle(text = stringResource(id = R.string.title_tasks))
+
+
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     itemsIndexed(filteredTasks) { index, task ->
                         TaskItem(
@@ -217,17 +181,9 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                                 viewModel.toggleTaskCompletion(task)
                             }
                         )
-
-                        if (index < filteredTasks.lastIndex) {
-                            HorizontalDivider(
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-                                modifier = Modifier.padding(horizontal = AppDimens.PaddingLarge)
-                            )
-                        }
+                        Spacer(Modifier.height(AppDimens.PaddingSmall))
                     }
                 }
-            }
-
             Spacer(Modifier.height(AppDimens.PaddingXLarge + AppDimens.PaddingLarge)) // 32dp
         }
     }

@@ -32,9 +32,9 @@ private val LightColorScheme = lightColorScheme(
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFD0BCFF),      // Bright violet for contrast
     onPrimary = Color(0xFF381E72),    // Dark violet text over light purple
-    background = Color(0xFF121212),   // True dark mode background
+    background = Color(0xFF0D0D0D),   // True dark mode background
     onBackground = Color(0xFFECE6F0), // Soft lavender-white text
-    surface = Color(0xFF1E1E1E),      // Elevated card surfaces
+    surface = Color(0xFF2C2C2E),    // Elevated card surfaces
     onSurface = Color(0xFFECE6F0),
     secondary = Color(0xFF7C4DFF),    // Bold purple accent
     onSecondary = Color.Black,
@@ -51,7 +51,7 @@ fun TaskWhizTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) LightColorScheme else LightColorScheme
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,

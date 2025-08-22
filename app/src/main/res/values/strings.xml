@@ -40,6 +40,10 @@
     <string name="select_time">Select time</string>
 
     <string name="error_empty_title">Title cannot be empty</string>
+    <string name="search_tasks">Search tasks</string>
+
+    <string name="title_tasks">Tasks</string>
+    <string name="title_filters">Filters</string>
 
 
 </resources>

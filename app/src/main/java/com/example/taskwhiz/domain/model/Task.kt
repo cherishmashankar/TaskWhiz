@@ -16,3 +16,11 @@ data class Task(
     val isMessy: Boolean = true,           // true if rawInput exists but fields are not AI-parsed
     val rawInput: String? = null           // ✅ Store original user input here
 )
+
+enum class Language {
+    ENGLISH, GERMAN
+}
+
+enum class AppTheme {
+    LIGHT, DARK
+}

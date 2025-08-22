@@ -92,6 +92,12 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("androidx.compose.material:material-icons-extended")
 
+    // Preferences DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // (Optional) Proto DataStore if you later need strongly typed schema
+    // implementation "androidx.datastore:datastore:1.1.1"
+
 
 
 }

@@ -40,6 +40,10 @@
     <string name="select_time">Uhrzeit auswählen</string>
 
     <string name="error_empty_title">Titel darf nicht leer sein</string>
+    <string name="search_tasks">Aufgaben suchen</string>
+
+    <string name="title_tasks">Aufgaben</string>
+    <string name="title_filters">Filter</string>
 
 
 </resources>

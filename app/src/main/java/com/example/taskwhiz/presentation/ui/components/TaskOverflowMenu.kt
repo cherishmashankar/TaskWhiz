@@ -1,6 +1,7 @@
 package com.example.taskwhiz.presentation.ui.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -16,7 +17,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.example.taskwhiz.R
 
 @Composable
@@ -33,6 +36,7 @@ fun TaskOverflowMenu(
             Icon(
                 imageVector = Icons.Default.MoreVert,
                contentDescription = stringResource(R.string.more_options),
+                modifier = Modifier.size(20.dp)
             )
         }
         DropdownMenu(

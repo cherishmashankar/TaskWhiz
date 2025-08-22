@@ -32,7 +32,7 @@ object AppDimens {
     val BorderThick = 4.dp
 
     // Task completion toggle
-    val ToggleSize = 24.dp
+    val ToggleSize = 28.dp
 
     // Badge
     val BadgeHeight = 28.dp
@@ -48,7 +48,7 @@ object AppDimens {
     val SubtaskIconSpacing = 8.dp
 
     // Task item
-    val TaskItemPaddingVertical = 12.dp
-    val TaskTitleTimestampSpacing = 2.dp
+    val TaskItemPaddingVertical = 8.dp
+    val TaskTitleTimestampSpacing = 1.dp
     val TaskBadgesSpacing = 16.dp
 }

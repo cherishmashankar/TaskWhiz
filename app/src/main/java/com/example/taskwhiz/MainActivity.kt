@@ -8,10 +8,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.taskwhiz.domain.model.AppTheme
 import com.example.taskwhiz.presentation.ui.screen.TaskListScreen
 import com.example.taskwhiz.presentation.ui.theme.TaskWhizTheme
+import com.example.taskwhiz.presentation.util.updateLocale
 import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,9 +31,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            TaskWhizTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    val viewModel: TaskViewModel = hiltViewModel()
+            val viewModel: TaskViewModel = hiltViewModel()
+            val theme by viewModel.theme.collectAsState()
+            val language by viewModel.language.collectAsState()
+
+            val context = LocalContext.current
+            val localizedContext = remember(language) {
+                context.updateLocale(language)
+            }
+            CompositionLocalProvider(
+                LocalContext provides localizedContext
+            ) {
+                TaskWhizTheme(darkTheme = theme == AppTheme.DARK) {
                     TaskListScreen(viewModel)
                 }
             }
