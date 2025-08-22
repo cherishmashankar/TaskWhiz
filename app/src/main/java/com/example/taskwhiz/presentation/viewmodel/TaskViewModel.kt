@@ -38,9 +38,7 @@ class TaskViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getAllTasksUseCase().collect { taskList ->
-                _tasks.value = taskList
-            }
+            getAllTasksUseCase().collect { list -> _tasks.value = list }
         }
         observePreferences()
     }
@@ -82,5 +80,79 @@ class TaskViewModel @Inject constructor(
 
     fun changeTheme(theme: AppTheme) {
         viewModelScope.launch { setThemeUseCase(theme) }
+    }
+
+
+    // ------------------ FILTERS ------------------ //
+    val search = MutableStateFlow("")                  // search text
+    val status = MutableStateFlow("All")
+
+    private val _activeFilters = MutableStateFlow<Set<String>>(emptySet())
+    val activeFilters: StateFlow<Set<String>> = _activeFilters
+
+
+    // ---- Toggle filters
+    private val DATE_FILTERS = setOf("Today", "Overdue")
+    fun toggleFilter(selected: String) {
+        val current = _activeFilters.value
+
+        _activeFilters.value =
+            if (selected in DATE_FILTERS) {
+                val currentDate = current intersect DATE_FILTERS
+                when {
+                    // Tap the same active date filter -> clear (none selected)
+                    selected in currentDate -> current - selected
+                    // Switch date filter -> replace the previous one
+                    else -> (current - DATE_FILTERS) + selected
+                }
+            } else {
+                // Non-date filters can be combined (toggle on/off)
+                if (selected in current) current - selected else current + selected
+            }
+    }
+
+    // ---- Visible list derived from everything
+    val visibleTasks: StateFlow<List<Task>> =
+        combine(tasks, activeFilters, search, status) { list, filters, q, st ->
+            list.filter { task ->
+                val matchesSearch = task.title.contains(q, ignoreCase = true)
+
+                val matchesStatus = when (st) {
+                    "Completed" -> task.isCompleted
+                    "Pending"   -> !task.isCompleted
+                    else        -> true
+                }
+
+                val dateMatch = when {
+                    "Today" in filters     -> task.dueAt?.let { android.text.format.DateUtils.isToday(it) } == true
+                    "Overdue" in filters   -> task.dueAt?.let { it < System.currentTimeMillis() } == true
+                    else -> true
+                }
+
+                val reminderMatch = if ("Reminder" in filters) task.reminderAt != null else true
+                val priorityMatch = if ("High Priority" in filters) task.priorityLevel == 1 else true
+
+                matchesSearch && matchesStatus && dateMatch && reminderMatch && priorityMatch
+            }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    fun matchesActiveFilters(task: Task): Boolean {
+        val filters = _activeFilters.value
+
+        // No filters → always match
+        if (filters.isEmpty()) return true
+
+        // Date filters (only one at a time)
+        val dateMatch = when {
+            filters.contains("Today") -> task.dueAt?.let { android.text.format.DateUtils.isToday(it) } == true
+            filters.contains("This Week") -> task.dueAt?.let { com.example.taskwhiz.utils.isThisWeek(it) } == true
+            filters.contains("Overdue") -> task.dueAt?.let { it < System.currentTimeMillis() } == true
+            else -> true
+        }
+
+        // Other filters (can combine)
+        val reminderMatch = if (filters.contains("Reminder")) task.reminderAt != null else true
+        val highPriorityMatch = if (filters.contains("High Priority")) task.priorityLevel == 1 else true
+
+        return dateMatch && reminderMatch && highPriorityMatch
     }
 }

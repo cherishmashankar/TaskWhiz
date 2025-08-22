@@ -81,19 +81,18 @@ fun TaskItem(
                     )
                 }
                 if (showBadges) {
-                    Spacer(Modifier.height(AppDimens.TaskBadgesSpacing))
+                    Spacer(Modifier.height(AppDimens.PaddingMedium))
                     TaskStatusBadges(
                         dueDate = task.dueAt,
                         reminderDate = task.reminderAt,
                         isHighPriority = (task.priorityLevel == 1),
                     )
+                    Spacer(Modifier.height(AppDimens.PaddingXSmall))
                 }
             }
 
-
         }
     }
-
     }
 
 

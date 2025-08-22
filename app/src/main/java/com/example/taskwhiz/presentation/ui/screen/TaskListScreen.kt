@@ -5,200 +5,160 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-
+import androidx.compose.ui.unit.dp
 import com.example.taskwhiz.R
 import com.example.taskwhiz.domain.model.Task
-import com.example.taskwhiz.presentation.ui.components.SectionTitle
-import com.example.taskwhiz.presentation.ui.components.TaskEditorBottomSheet
-import com.example.taskwhiz.presentation.ui.components.TaskItem
-import com.example.taskwhiz.presentation.ui.components.TaskSearchBar
+import com.example.taskwhiz.presentation.ui.components.*
+import com.example.taskwhiz.presentation.ui.model.FilterItem
 import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
+import com.example.taskwhiz.utils.isThisWeek
+
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
 @Composable
 fun TaskListScreen(viewModel: TaskViewModel) {
-    val tasks by viewModel.tasks.collectAsState()
+    val tasks by viewModel.tasks.collectAsState(initial = emptyList())
+    val visibleTasks by viewModel.visibleTasks.collectAsState(initial = emptyList())
+    val activeFilters by viewModel.activeFilters.collectAsState(initial = emptySet())
+
+    // If you have these in your VM already:
+    val language by viewModel.language.collectAsState()
+    val theme by viewModel.theme.collectAsState()
 
     var showSheet by remember { mutableStateOf(false) }
     var selectedTask: Task? by remember { mutableStateOf(null) }
 
-    var searchQuery by remember { mutableStateOf("") }
-    var selectedStatus by remember { mutableStateOf("All") }
-    var selectedDateFilter by remember { mutableStateOf("All Dates") }
+    // ---- Dynamic counts for the grid
+    val todayCount = tasks.count { it.dueAt?.let { d -> android.text.format.DateUtils.isToday(d) } == true }
+    val thisWeekCount = tasks.count { it.dueAt?.let { d -> com.example.taskwhiz.utils.isThisWeek(d) } == true }
+    val overdueCount = tasks.count { it.dueAt?.let { d -> d < System.currentTimeMillis() } == true }
+    val reminderCount = tasks.count { it.reminderAt != null }
+    val highPriorityCount = tasks.count { it.priorityLevel == 1 }
 
-    val statusFilters = listOf("All", "Completed", "Pending")
-    val dateFilters = listOf("All Dates", "Today", "This Week", "Overdue")
-
-    val language by viewModel.language.collectAsState()
-    val theme by viewModel.theme.collectAsState()
+    val filterItems = listOf(
+        FilterItem("Today", todayCount, Icons.Default.CalendarToday, MaterialTheme.colorScheme.primary),
+        FilterItem("Overdue", overdueCount, Icons.Default.EventBusy, MaterialTheme.colorScheme.error),
+        FilterItem("Reminder", reminderCount, Icons.Default.Notifications, MaterialTheme.colorScheme.primary),
+        FilterItem("High Priority", highPriorityCount, Icons.Default.Star, MaterialTheme.colorScheme.tertiaryContainer)
+    )
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    selectedTask = null
-                    showSheet = true
-                },
+                onClick = { selectedTask = null; showSheet = true },
                 modifier = Modifier.padding(AppDimens.PaddingLarge),
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_task_add),
-                    contentDescription = "Add Task",
-                    modifier = Modifier.size(AppDimens.IconLarge + AppDimens.PaddingSmall) // 28dp
+                    contentDescription = stringResource(id = R.string.add_task),
+                    modifier = Modifier.size(AppDimens.IconLarge + AppDimens.PaddingSmall)
                 )
             }
         }
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.background),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.PaddingXLarge)
         ) {
-            Spacer(Modifier.height(AppDimens.PaddingXLarge + AppDimens.PaddingLarge)) // 32dp
+            // Search + Status chips
+            item {
+                Spacer(Modifier.height(AppDimens.PaddingXLarge))
 
-            TaskSearchBar(
-                query = searchQuery,
-                onQueryChange = { searchQuery = it },
-                currentLanguage = language,
-                currentTheme = theme,
-                onLanguageChange = { viewModel.changeLanguage(it) },
-                onThemeChange = { viewModel.changeTheme(it) }
-            )
+                TaskSearchBar(
+                    query = viewModel.search.collectAsState().value,
+                    onQueryChange = { viewModel.search.value = it },
+                    currentLanguage = language,
+                    currentTheme = theme,
+                    onLanguageChange = { viewModel.changeLanguage(it) },
+                    onThemeChange = { viewModel.changeTheme(it) }
+                )
 
-
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingXSmall),
-                horizontalArrangement = Arrangement.spacedBy(AppDimens.PaddingSmall)
-            ) {
-                items(statusFilters.size) { i ->
-                    val filter = statusFilters[i]
-                    FilterChip(
-                        selected = selectedStatus == filter,
-                        onClick = { selectedStatus = filter },
-                        label = { Text(filter) }
-                    )
-                }
+                StatusFilterChips(
+                    selectedStatus = viewModel.status.collectAsState().value,
+                    onStatusSelected = { viewModel.status.value = it }
+                )
             }
 
-
-/*            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingXSmall),
-                horizontalArrangement = Arrangement.spacedBy(AppDimens.PaddingSmall)
-            ) {
-                items(dateFilters.size) { i ->
-                    val filter = dateFilters[i]
-                    FilterChip(
-                        selected = selectedDateFilter == filter,
-                        onClick = { selectedDateFilter = filter },
-                        label = { Text(filter) }
-                    )
-                }
-            }*/
-
-
-            // Filter + Search Logic
-            val filteredTasks = tasks.filter { task ->
-                val matchesSearch = task.title.contains(searchQuery, ignoreCase = true)
-
-                val matchesStatus = when (selectedStatus) {
-                    "Completed" -> task.isCompleted
-                    "Pending" -> !task.isCompleted
-                    else -> true
-                }
-
-                val matchesDate = when (selectedDateFilter) {
-                    "Today" -> task.dueAt?.let { android.text.format.DateUtils.isToday(it) } ?: false
-                    "This Week" -> task.dueAt?.let { com.example.taskwhiz.utils.isThisWeek(it) } ?: false
-                    "Overdue" -> task.dueAt?.let { it < System.currentTimeMillis() } ?: false
-                    else -> true
-                }
-
-                matchesSearch && matchesStatus && matchesDate
-            }
-            //SectionTitle(text = stringResource(id = R.string.title_filters))
-
-
-            Spacer(Modifier.height(AppDimens.PaddingXLarge))
-            SectionTitle(text = stringResource(id = R.string.title_tasks))
-
-
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    itemsIndexed(filteredTasks) { index, task ->
-                        TaskItem(
-                            task = task,
-                            onEditClick = { clickedTask ->
-                                selectedTask = clickedTask
-                                showSheet = true
-                            },
-                            onDeleteClick = { clickedTask ->
-                                viewModel.deleteTask(clickedTask)
-                            },
-                            onToggle = {
-                                viewModel.toggleTaskCompletion(task)
-                            }
+            // Filters grid (bounded height, parent LazyColumn scrolls)
+            item {
+                SectionTitle(text = stringResource(id = R.string.title_filters))
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 300.dp)
+                        .padding(horizontal = AppDimens.PaddingLarge),
+                    horizontalArrangement = Arrangement.spacedBy(AppDimens.PaddingLarge),
+                    verticalArrangement = Arrangement.spacedBy(AppDimens.PaddingMedium),
+                    userScrollEnabled = false
+                ) {
+                    items(filterItems.filter { it.count > 0 }) { filter ->
+                        FilterCard(
+                            item = filter,
+                            isSelected = activeFilters.contains(filter.name),
+                            onClick = { viewModel.toggleFilter(filter.name) },
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        Spacer(Modifier.height(AppDimens.PaddingSmall))
                     }
                 }
-            Spacer(Modifier.height(AppDimens.PaddingXLarge + AppDimens.PaddingLarge)) // 32dp
+            }
+
+            // Tasks section (header + list in one visual group)
+            item {
+                Column(Modifier.fillMaxWidth()) {
+                    SectionTitle(text = stringResource(id = R.string.title_tasks))
+                    if (visibleTasks.isEmpty()) {
+/*                        Text(
+                            text = stringResource(id = R.string.no_tasks_found),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = AppDimens.PaddingLarge)
+                        )*/
+                    } else {
+                        visibleTasks.forEach { task ->
+                            TaskItem(
+                                task = task,
+                                onEditClick = { clickedTask ->
+                                    selectedTask = clickedTask
+                                    showSheet = true
+                                },
+                                onDeleteClick = { clickedTask -> viewModel.deleteTask(clickedTask) },
+                                onToggle = { viewModel.toggleTaskCompletion(task) }
+                            )
+                            Spacer(Modifier.height(AppDimens.PaddingSmall))
+                        }
+                    }
+                }
+            }
         }
     }
 
     if (showSheet) {
         TaskEditorBottomSheet(
             task = selectedTask,
-            onSave = { newTask ->
-                viewModel.addNewTask(newTask)
-                showSheet = false
-            },
-            onUpdate = { updatedTask ->
-                viewModel.updateExistingTask(updatedTask)
-                showSheet = false
-            },
+            onSave = { newTask -> viewModel.addNewTask(newTask); showSheet = false },
+            onUpdate = { updatedTask -> viewModel.updateExistingTask(updatedTask); showSheet = false },
             onDismiss = { showSheet = false }
         )
     }

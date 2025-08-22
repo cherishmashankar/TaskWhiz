@@ -84,7 +84,7 @@ fun SubtaskList(
                         onSubtasksChange(copy)
                     },
                     cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    textStyle = MaterialTheme.typography.titleMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Medium
                     ),

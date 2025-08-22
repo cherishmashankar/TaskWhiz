@@ -87,14 +87,14 @@ fun SettingsMenu(
                 Icon(
                     imageVector = Icons.Default.DarkMode,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.secondary
                 )
             },
             text = {
                 Text(
                     "Theme",
                     style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.secondary
                 )
             },
             onClick = { /* acts as section header, no-op */ },
@@ -112,7 +112,7 @@ fun SettingsMenu(
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = "Selected",
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = MaterialTheme.colorScheme.secondary
                         )
                     } else {
                         Icon(

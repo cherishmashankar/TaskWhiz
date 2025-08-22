@@ -45,5 +45,10 @@
     <string name="title_tasks">Aufgaben</string>
     <string name="title_filters">Filter</string>
 
+    <string name="filter_all">Alle</string>
+    <string name="filter_completed">Erledigt</string>
+    <string name="filter_pending">Ausstehend</string>
+    <string name="add_task">Add Task\n</string>
+
 
 </resources>

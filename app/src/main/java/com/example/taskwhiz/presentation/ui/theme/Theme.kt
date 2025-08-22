@@ -1,50 +1,49 @@
 package com.example.taskwhiz.presentation.ui.theme
 
-import android.app.Activity
-import android.os.Build
+
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF6750A4),      // Deep modern purple (Material baseline)
+    primary = Color(0xFF6750A4),
     onPrimary = Color.White,
-    background = Color(0xFFFAF9FC),   // Neutral off-white with a hint of lavender
-    onBackground = Color(0xFF1A1A1A), // High contrast dark text
-    surface = Color(0xFFFFFFFF),      // Pure white card surfaces
+    background = Color(0xFFFAF9FC),
+    onBackground = Color(0xFF1A1A1A),
+    surface = Color(0xFFFFFFFF),
     onSurface = Color(0xFF1E1A22),
-    secondary = Color(0xFF9C27B0),    // Rich accent purple (vivid but controlled)
+    // Secondary can stay rich but we won’t use it as the selected fill
+    secondary = Color(0xFF5B4EA5),
     onSecondary = Color.White,
-    error = Color(0xFFB3261E),        // Accessible red (Material baseline)
+    surfaceVariant = Color(0xFFEDE7F3),   // slightly lighter than E7E0EC
+    onSurfaceVariant = Color(0xFF514A5A),
+    error = Color(0xFFB3261E),
     onError = Color.White,
-    surfaceVariant = Color(0xFFE7E0EC), // Muted lavender-gray for contrast sections
-    onSurfaceVariant = Color(0xFF49454F),
-    tertiaryContainer = Color(0xFFFFB300), // Warm amber accent
+    tertiaryContainer = Color(0xFFFFB300),
     onTertiaryContainer = Color(0xFF3E2723)
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFD0BCFF),      // Bright violet for contrast
-    onPrimary = Color(0xFF381E72),    // Dark violet text over light purple
-    background = Color(0xFF0D0D0D),   // True dark mode background
-    onBackground = Color(0xFFECE6F0), // Soft lavender-white text
-    surface = Color(0xFF2C2C2E),    // Elevated card surfaces
+    primary = Color(0xFFD0BCFF),
+    onPrimary = Color(0xFF381E72),
+    background = Color(0xFF0D0D0D),
+    onBackground = Color(0xFFECE6F0),
+    surface = Color(0xFF2C2C2E),
     onSurface = Color(0xFFECE6F0),
-    secondary = Color(0xFF7C4DFF),    // Bold purple accent
+    secondary = Color(0xFFD6C9F8),
     onSecondary = Color.Black,
-    error = Color(0xFFF2B8B5),        // Lighter red for dark mode
-    onError = Color(0xFF601410),
-    surfaceVariant = Color(0xFF2C2C2C), // Layer separation
+    surfaceVariant = Color(0xFF2F2A36),
     onSurfaceVariant = Color(0xFFCAC4D0),
-    tertiaryContainer = Color(0xFFFFD54F), // Warm golden highlight
+    error = Color(0xFFF56159),
+    onError = Color(0xFF601410),
+    tertiaryContainer = Color(0xFFFFD54F),
     onTertiaryContainer = Color(0xFF1A1200)
 )
+
 
 @Composable
 fun TaskWhizTheme(
