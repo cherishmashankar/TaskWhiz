@@ -20,8 +20,10 @@ interface TaskDao {
     @Delete
     suspend fun deleteTask(task: TaskEntity)
 
+
+
     @Query("SELECT * FROM tasks WHERE id = :id")
-    suspend fun getTaskById(id: Long): TaskEntity?
+    fun getTaskById(id: Long): Flow<TaskEntity?>
 
 
     // Get all active (non-archived) tasks, ordered by due date

@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
+import androidx.core.graphics.toColorInt
 import com.example.taskwhiz.R
 import com.example.taskwhiz.presentation.ui.theme.AppDimens
 
@@ -27,6 +28,7 @@ fun TaskTitleInput(
     title: String,
     onTitleChange: (String) -> Unit,
     modifier: Modifier,
+    selectedColor: String,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -39,7 +41,7 @@ fun TaskTitleInput(
             textStyle = TextStyle(
                 fontSize = 24.sp,       // Bigger, more focus
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
+                color = Color(selectedColor.toColorInt())
             ),
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
@@ -51,7 +53,7 @@ fun TaskTitleInput(
             ),
             modifier =  modifier
                 .fillMaxWidth()
-                .padding(vertical = AppDimens.PaddingLarge),
+                .padding(vertical = AppDimens.PaddingMedium),
             decorationBox = { innerTextField ->
                 if (title.isEmpty()) {
                     Text(

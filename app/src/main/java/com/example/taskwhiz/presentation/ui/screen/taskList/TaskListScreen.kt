@@ -1,4 +1,4 @@
-package com.example.taskwhiz.presentation.ui.screen
+package com.example.taskwhiz.presentation.ui.screen.taskList
 
 import android.Manifest
 import android.os.Build
@@ -7,7 +7,6 @@ import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -16,37 +15,36 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.taskwhiz.R
 import com.example.taskwhiz.domain.model.Task
+import com.example.taskwhiz.navigation.Screen
 import com.example.taskwhiz.presentation.ui.components.*
 import com.example.taskwhiz.presentation.ui.model.FilterItem
 import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
-import com.example.taskwhiz.utils.isThisWeek
-
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
 @Composable
-fun TaskListScreen(viewModel: TaskViewModel) {
+fun TaskListScreen(
+    viewModel: TaskViewModel = hiltViewModel(),
+    navController: NavHostController   // 👈 pass navController in
+) {
+
+
     val tasks by viewModel.tasks.collectAsState(initial = emptyList())
     val visibleTasks by viewModel.visibleTasks.collectAsState(initial = emptyList())
     val activeFilters by viewModel.activeFilters.collectAsState(initial = emptySet())
 
-    // If you have these in your VM already:
     val language by viewModel.language.collectAsState()
     val theme by viewModel.theme.collectAsState()
 
-    var showSheet by remember { mutableStateOf(false) }
-    var selectedTask: Task? by remember { mutableStateOf(null) }
-
-    // ---- Dynamic counts for the grid
     val todayCount = tasks.count { it.dueAt?.let { d -> android.text.format.DateUtils.isToday(d) } == true }
-    val thisWeekCount = tasks.count { it.dueAt?.let { d -> com.example.taskwhiz.utils.isThisWeek(d) } == true }
     val overdueCount = tasks.count { it.dueAt?.let { d -> d < System.currentTimeMillis() } == true }
     val reminderCount = tasks.count { it.reminderAt != null }
     val highPriorityCount = tasks.count { it.priorityLevel == 1 }
@@ -61,7 +59,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { selectedTask = null; showSheet = true },
+                onClick = {  navController.navigate(Screen.TaskEditor.createRoute()) },
                 modifier = Modifier.padding(AppDimens.PaddingLarge),
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -81,7 +79,6 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 .background(MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.spacedBy(AppDimens.PaddingXLarge)
         ) {
-            // Search + Status chips
             item {
                 Spacer(Modifier.height(AppDimens.PaddingXLarge))
 
@@ -100,11 +97,10 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 )
             }
 
-            // Filters grid (bounded height, parent LazyColumn scrolls)
             item {
                 SectionTitle(text = stringResource(id = R.string.title_filters))
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                    columns = GridCells.Fixed(3),
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(max = 300.dp)
@@ -124,26 +120,25 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 }
             }
 
-            // Tasks section (header + list in one visual group)
             item {
                 Column(Modifier.fillMaxWidth()) {
                     SectionTitle(text = stringResource(id = R.string.title_tasks))
                     if (visibleTasks.isEmpty()) {
 /*                        Text(
-                            text = stringResource(id = R.string.no_tasks_found),
+                            text = stringResource(R.string.no_tasks),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(horizontal = AppDimens.PaddingLarge)
+                            modifier = Modifier.padding(AppDimens.PaddingLarge)
                         )*/
                     } else {
                         visibleTasks.forEach { task ->
                             TaskItem(
                                 task = task,
                                 onEditClick = { clickedTask ->
-                                    selectedTask = clickedTask
-                                    showSheet = true
+                                    navController.navigate(Screen.TaskEditor.createRoute(clickedTask.id)) // pass clicked task to navigation
                                 },
-                                onDeleteClick = { clickedTask -> viewModel.deleteTask(clickedTask) },
+                                onDeleteClick = { clickedTask ->
+                                    viewModel.deleteTask(clickedTask)
+                                },
                                 onToggle = { viewModel.toggleTaskCompletion(task) }
                             )
                             Spacer(Modifier.height(AppDimens.PaddingSmall))
@@ -152,14 +147,5 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 }
             }
         }
-    }
-
-    if (showSheet) {
-        TaskEditorBottomSheet(
-            task = selectedTask,
-            onSave = { newTask -> viewModel.addNewTask(newTask); showSheet = false },
-            onUpdate = { updatedTask -> viewModel.updateExistingTask(updatedTask); showSheet = false },
-            onDismiss = { showSheet = false }
-        )
     }
 }

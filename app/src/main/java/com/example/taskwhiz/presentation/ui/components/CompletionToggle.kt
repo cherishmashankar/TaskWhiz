@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -43,7 +42,7 @@ fun CompletionToggle(
         label = "bg"
     )
     val borderColor by animateColorAsState(
-        if (isCompleted) taskColor else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+        if (isCompleted) taskColor else taskColor.copy(alpha = 0.5f),
         label = "border"
     )
     val borderWidth by animateDpAsState(

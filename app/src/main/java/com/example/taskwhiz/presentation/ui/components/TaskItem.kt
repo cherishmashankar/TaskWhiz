@@ -1,5 +1,6 @@
 package com.example.taskwhiz.presentation.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -34,14 +35,14 @@ fun TaskItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingSmall),
-        shape = RoundedCornerShape(AppDimens.CornerLarge),
+            .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingSmall)
+            .clickable { onEditClick(task) },
+        shape = RoundedCornerShape(AppDimens.CornerMedium),
         elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.PaddingSmall),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
-
 
         Row(
             modifier = modifier
@@ -93,8 +94,7 @@ fun TaskItem(
 
         }
     }
-    }
-
+}
 
 
 

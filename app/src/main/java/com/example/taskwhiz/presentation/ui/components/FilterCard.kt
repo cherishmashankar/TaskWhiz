@@ -16,12 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.taskwhiz.presentation.ui.model.FilterItem
+import com.example.taskwhiz.presentation.ui.theme.AppDimens
 
 @Composable
 fun FilterCard(
@@ -51,7 +51,7 @@ fun FilterCard(
             .fillMaxWidth()
             .padding(vertical = 6.dp)
             .then(if (disabled) Modifier.alpha(0.5f) else Modifier),
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(AppDimens.CornerMedium),
         colors = CardDefaults.cardColors(
             containerColor = container,
             contentColor = MaterialTheme.colorScheme.onSurface

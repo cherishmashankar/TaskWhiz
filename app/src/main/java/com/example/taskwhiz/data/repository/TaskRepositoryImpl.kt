@@ -37,6 +37,10 @@ class TaskRepositoryImpl @Inject constructor(
         taskDao.updateTask(task.toEntity())
     }
 
+    override fun getTaskById(id: Long): Flow<Task?> {
+        return taskDao.getTaskById(id).map { it?.toDomain() }
+    }
+
 
     override suspend fun getMessyTasks(): List<Task> {
         return taskDao.getMessyTasks().map { it.toDomain() }

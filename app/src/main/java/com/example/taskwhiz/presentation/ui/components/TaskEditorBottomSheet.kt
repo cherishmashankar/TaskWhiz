@@ -89,7 +89,8 @@ fun TaskEditorBottomSheet(
                     onTitleChange = { title = it },
                     modifier = Modifier
                         .weight(1f)
-                        .focusRequester(titleFocusRequester)
+                        .focusRequester(titleFocusRequester),
+                    selectedColor = selectedColor
                 )
 
                 TaskEditorOverflowMenu(
