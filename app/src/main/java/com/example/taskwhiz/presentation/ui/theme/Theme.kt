@@ -16,10 +16,9 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color(0xFF1A1A1A),
     surface = Color(0xFFFFFFFF),
     onSurface = Color(0xFF1E1A22),
-    // Secondary can stay rich but we won’t use it as the selected fill
     secondary = Color(0xFF5B4EA5),
     onSecondary = Color.White,
-    surfaceVariant = Color(0xFFEDE7F3),   // slightly lighter than E7E0EC
+    surfaceVariant = Color(0xFFEDE7F3),
     onSurfaceVariant = Color(0xFF514A5A),
     error = Color(0xFFB3261E),
     onError = Color.White,

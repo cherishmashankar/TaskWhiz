@@ -1,6 +1,4 @@
-package com.example.taskwhiz.presentation.ui.components
-
-
+package com.example.taskwhiz.presentation.ui.screen.taskListScreen.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -10,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
 import com.example.taskwhiz.presentation.ui.theme.AppDimens
 
 @Composable
@@ -24,7 +21,7 @@ fun SectionTitle(
         text = text,
         style = MaterialTheme.typography.titleLarge.copy(
             fontSize = fontSize,
-            fontWeight = FontWeight.Bold   // 🔹 Bold font
+            fontWeight = FontWeight.Bold
         ),
         color = color,
         modifier = modifier

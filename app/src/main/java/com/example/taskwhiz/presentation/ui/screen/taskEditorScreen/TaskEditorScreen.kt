@@ -1,4 +1,4 @@
-package com.example.taskwhiz.presentation.ui.screen.taskEditor
+package com.example.taskwhiz.presentation.ui.screen.taskEditorScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.taskwhiz.R
 import com.example.taskwhiz.domain.model.Task
-import com.example.taskwhiz.presentation.ui.components.*
 import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.example.taskwhiz.presentation.ui.screen.taskEditorScreen.components.ColorPaletteSelector
+import com.example.taskwhiz.presentation.ui.screen.taskEditorScreen.components.SubtaskList
+import com.example.taskwhiz.presentation.ui.screen.taskEditorScreen.components.TaskEditorMoreOptionSection
+import com.example.taskwhiz.presentation.ui.screen.taskEditorScreen.components.TaskEditorOverflowMenu
+import com.example.taskwhiz.presentation.ui.screen.taskEditorScreen.components.TaskTitleInput
+import com.example.taskwhiz.presentation.ui.screen.taskEditorScreen.components.TimePickerDialog
 import kotlinx.coroutines.android.awaitFrame
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -91,13 +96,14 @@ fun TaskEditorScreen(
                             if (task == null) onSave(built) else onUpdate(built)
                         },
                         enabled = title.isNotBlank(),
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = 12.dp)
                     ) {
                         Text(
                             text = if (task == null) stringResource(R.string.add_task) else stringResource(R.string.update_task),
                             style = buttonTextStyle,
                             color = if (title.isNotBlank()) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+
                         )
                     }
                 }
@@ -128,7 +134,7 @@ fun TaskEditorScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
-                        .padding(horizontal = AppDimens.PaddingMedium)
+                        .padding(horizontal = AppDimens.PaddingMedium, vertical = AppDimens.PaddingMedium)
                 ) {
                     TaskTitleInput(
                         title = title,

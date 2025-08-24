@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,8 +12,9 @@ import androidx.navigation.navArgument
 import androidx.navigation.NavType
 import com.example.taskwhiz.domain.model.Task
 import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
-import com.example.taskwhiz.presentation.ui.screen.taskList.TaskListScreen
-import com.example.taskwhiz.presentation.ui.screen.taskEditor.TaskEditorScreen
+import com.example.taskwhiz.presentation.ui.screen.taskListScreen.TaskListScreen
+import com.example.taskwhiz.presentation.ui.screen.taskEditorScreen.TaskEditorScreen
+import com.example.taskwhiz.presentation.viewmodel.SettingsViewModel
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
@@ -22,7 +22,8 @@ fun AppNavGraph(
     navController: NavHostController,
     onSaveTask: (Task) -> Unit,
     onUpdateTask: (Task) -> Unit,
-    taskViewModel: TaskViewModel
+    taskViewModel: TaskViewModel,
+    settingsViewModel: SettingsViewModel
 ) {
     NavHost(
         navController = navController,
@@ -31,7 +32,8 @@ fun AppNavGraph(
         // Task List Screen
         composable(Screen.TaskList.route) {
             TaskListScreen(
-                viewModel = taskViewModel,
+                taskViewModel = taskViewModel,
+                settingsViewModel = settingsViewModel,
                 navController = navController
             )
         }
@@ -47,7 +49,6 @@ fun AppNavGraph(
         ) { backStackEntry ->
             val taskId = backStackEntry.arguments?.getLong("taskId") ?: -1L
 
-            // If editing → collect task, else just null
             val task by taskViewModel
                 .getTaskById(taskId)
                 .collectAsState(initial = null)

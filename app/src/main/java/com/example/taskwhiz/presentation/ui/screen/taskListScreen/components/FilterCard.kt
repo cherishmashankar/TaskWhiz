@@ -1,4 +1,4 @@
-package com.example.taskwhiz.presentation.ui.components
+package com.example.taskwhiz.presentation.ui.screen.taskListScreen.components
 
 
 import androidx.compose.animation.animateColorAsState
@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -63,7 +64,6 @@ fun FilterCard(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            // Row: icon (left) + count (right)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -71,7 +71,7 @@ fun FilterCard(
             ) {
                 Icon(
                     imageVector = item.icon,
-                    contentDescription = item.name,
+                    contentDescription =stringResource(id = item.labelRes),
                     tint =  accent,
                     modifier = Modifier.size(28.dp)
                 )
@@ -83,7 +83,7 @@ fun FilterCard(
             }
 
             Text(
-                text = item.name,
+                text = stringResource(id = item.labelRes),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodyMedium.copy(

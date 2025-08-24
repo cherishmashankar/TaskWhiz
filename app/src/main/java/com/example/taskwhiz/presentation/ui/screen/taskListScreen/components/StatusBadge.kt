@@ -1,4 +1,4 @@
-package com.example.taskwhiz.presentation.ui.components
+package com.example.taskwhiz.presentation.ui.screen.taskListScreen.components
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 

@@ -48,7 +48,15 @@
     <string name="filter_all">Alle</string>
     <string name="filter_completed">Erledigt</string>
     <string name="filter_pending">Ausstehend</string>
-    <string name="add_task">Add Task\n</string>
+    <string name="add_task">Aufgabe hinzufügen</string>
+
+    <string name="filter_today">Heute</string>
+    <string name="filter_overdue">Überfällig</string>
+    <string name="filter_reminder">Erinnerung</string>
+    <string name="filter_high_priority">Hohe Priorität</string>
+
+    <string name="no_tasks">Noch keine Aufgaben</string>
+    <string name="no_tasks_hint">Tippe auf +, um deine erste Aufgabe zu erstellen.</string>
 
 
 </resources>

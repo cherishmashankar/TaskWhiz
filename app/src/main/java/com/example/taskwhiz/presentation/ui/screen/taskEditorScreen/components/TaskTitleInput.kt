@@ -1,4 +1,4 @@
-package com.example.taskwhiz.presentation.ui.components
+package com.example.taskwhiz.presentation.ui.screen.taskEditorScreen.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,7 +39,7 @@ fun TaskTitleInput(
             },
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
             textStyle = TextStyle(
-                fontSize = 24.sp,       // Bigger, more focus
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(selectedColor.toColorInt())
             ),

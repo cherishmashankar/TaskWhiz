@@ -16,7 +16,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.taskwhiz.domain.model.AppTheme
 import com.example.taskwhiz.navigation.AppNavGraph
 import com.example.taskwhiz.presentation.ui.theme.TaskWhizTheme
-import com.example.taskwhiz.presentation.util.updateLocale
+import com.example.taskwhiz.presentation.utils.updateLocale
+import com.example.taskwhiz.presentation.viewmodel.SettingsViewModel
 import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,9 +30,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val viewModel: TaskViewModel = hiltViewModel()
-            val theme by viewModel.theme.collectAsState()
-            val language by viewModel.language.collectAsState()
+            val taskViewModel: TaskViewModel = hiltViewModel()
+            val settingsViewModel: SettingsViewModel = hiltViewModel()
+
+            val theme by settingsViewModel.theme.collectAsState()
+            val language by settingsViewModel.language.collectAsState()
 
             val context = LocalContext.current
             val localizedContext = remember(language) {
@@ -44,13 +47,12 @@ class MainActivity : ComponentActivity() {
                 TaskWhizTheme(darkTheme = theme == AppTheme.DARK) {
                     val navController = rememberNavController()
 
-                    // Use your navigation graph
                     AppNavGraph(
                         navController = navController,
-                        onSaveTask = { task -> viewModel.addNewTask(task) },
-                        onUpdateTask = { task -> viewModel.updateExistingTask(task) },
-                        taskViewModel = viewModel
-
+                        onSaveTask = { task -> taskViewModel.addNewTask(task) },
+                        onUpdateTask = { task -> taskViewModel.updateExistingTask(task) },
+                        taskViewModel = taskViewModel,
+                        settingsViewModel = settingsViewModel,
                     )
                 }
             }

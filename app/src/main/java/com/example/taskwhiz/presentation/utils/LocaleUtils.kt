@@ -1,4 +1,4 @@
-package com.example.taskwhiz.presentation.util
+package com.example.taskwhiz.presentation.utils
 
 import android.content.Context
 import com.example.taskwhiz.domain.model.Language

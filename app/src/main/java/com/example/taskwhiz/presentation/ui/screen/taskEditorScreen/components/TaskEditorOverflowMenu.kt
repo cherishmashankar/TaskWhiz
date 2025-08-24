@@ -1,4 +1,4 @@
-package com.example.taskwhiz.presentation.ui.components
+package com.example.taskwhiz.presentation.ui.screen.taskEditorScreen.components
 
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Box

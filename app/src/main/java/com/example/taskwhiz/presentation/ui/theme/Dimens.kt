@@ -23,8 +23,8 @@ object AppDimens {
     val CornerFull = 50.dp
 
     // Color palette selector
-    val ColorCircle = 40.dp
-    val ColorCircleSelected = 44.dp
+    val ColorCircle = 44.dp
+    val ColorCircleSelected = 48.dp
 
     // Borders
     val BorderThin = 1.dp
@@ -50,5 +50,5 @@ object AppDimens {
     // Task item
     val TaskItemPaddingVertical = 8.dp
     val TaskTitleTimestampSpacing = 1.dp
-    val TaskBadgesSpacing = 16.dp
+
 }

@@ -1,4 +1,4 @@
-package com.example.taskwhiz.presentation.ui.components
+package com.example.taskwhiz.presentation.ui.screen.taskEditorScreen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,14 +27,13 @@ fun ColorPaletteSelector(
     onColorChange: (String) -> Unit
 ) {
     val colors = listOf(
-        "#FF6F61", // Coral
-        "#FFB300", // Amber
-        "#2E7D32", // Mint Green
-        "#118AB2", // Teal
-        "#073B4C", // Navy
-        "#EF476F", // Pink Red
-        "#F4A261", // Soft Orange
-        "#06D6A0"  // Bright Aqua Green
+        "#FF6B6B", // Vibrant Coral Red
+        "#FFD166", // Warm Golden Yellow
+        "#06D6A0", // Fresh Aqua Green
+        "#118AB2", // Deep Teal Blue
+        "#9B5DE5", // Modern Purple
+        "#F3722C", // Tangerine Orange
+        "#4ECDC4"  // Minty Cyan
     )
 
     LazyRow(

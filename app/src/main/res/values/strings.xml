@@ -50,5 +50,13 @@
     <string name="filter_pending">Pending</string>
     <string name="add_task">Add Task\n</string>
 
+    <string name="filter_today">Today</string>
+    <string name="filter_overdue">Overdue</string>
+    <string name="filter_reminder">Reminder</string>
+    <string name="filter_high_priority">High Priority</string>
+
+    <string name="no_tasks">No tasks yet</string>
+    <string name="no_tasks_hint">Tap the + button to create your first task.</string>
+
 
 </resources>
