@@ -18,7 +18,7 @@ data class Message(
     val content: String // This is a JSON string that needs to be parsed separately
 )
 
-// Parsed content from inside `message.content` (actual task details)
+
 data class TaskResponse(
     val title: String,
     val dueAt: Long?,

@@ -1,5 +1,6 @@
 package com.example.taskwhiz.navigation
 
+import android.app.Activity
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -23,7 +24,8 @@ fun AppNavGraph(
     onSaveTask: (Task) -> Unit,
     onUpdateTask: (Task) -> Unit,
     taskViewModel: TaskViewModel,
-    settingsViewModel: SettingsViewModel
+    settingsViewModel: SettingsViewModel,
+    activity: Activity
 ) {
     NavHost(
         navController = navController,
@@ -34,7 +36,8 @@ fun AppNavGraph(
             TaskListScreen(
                 taskViewModel = taskViewModel,
                 settingsViewModel = settingsViewModel,
-                navController = navController
+                navController = navController,
+                activity = activity
             )
         }
 

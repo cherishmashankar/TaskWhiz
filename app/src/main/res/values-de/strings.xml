@@ -29,6 +29,7 @@
     <!-- Task Overflow Menu -->
     <string name="manage_task">Aufgabe bearbeiten</string>
     <string name="delete_task">Aufgabe löschen</string>
+    <string name="share_task">Aufgabe teilen</string>
 
     <!-- Task Status Badges -->
     <string name="high_priority">Hohe Priorität</string>
@@ -57,6 +58,16 @@
 
     <string name="no_tasks">Noch keine Aufgaben</string>
     <string name="no_tasks_hint">Tippe auf +, um deine erste Aufgabe zu erstellen.</string>
+
+
+    <string name="share_task_share">Aufgabe teilen</string>
+    <string name="share_task_title">Aufgabe: %1$s</string>
+    <string name="share_task_due">📅 Fällig: %1$s</string>
+    <string name="share_task_reminder">🔔 Erinnerung: %1$s</string>
+    <string name="share_task_priority_high">⭐ Priorität: %1$s</string>
+    <string name="share_task_priority_high_label">Hoch</string>
+    <string name="share_task_subtasks">Teilaufgaben:</string>
+    <string name="share_task_subtask_item">• %1$s</string>
 
 
 </resources>

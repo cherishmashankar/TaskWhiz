@@ -29,6 +29,7 @@
     <string name="more_options">More Options</string>
     <string name="manage_task">Manage Task</string>
     <string name="delete_task">Delete Task</string>
+    <string name="share_task">Share Task</string>
 
     <!-- Task Status Badges -->
     <string name="high_priority">High Priority</string>
@@ -57,6 +58,16 @@
 
     <string name="no_tasks">No tasks yet</string>
     <string name="no_tasks_hint">Tap the + button to create your first task.</string>
+
+
+    <string name="share_task_share">Share Task</string>
+    <string name="share_task_title">Task: %1$s</string>
+    <string name="share_task_due">📅 Due: %1$s</string>
+    <string name="share_task_reminder">🔔 Reminder: %1$s</string>
+    <string name="share_task_priority_high">⭐ Priority: %1$s</string>
+    <string name="share_task_priority_high_label">High</string>
+    <string name="share_task_subtasks">Subtasks:</string>
+    <string name="share_task_subtask_item">• %1$s</string>
 
 
 </resources>

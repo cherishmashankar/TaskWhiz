@@ -30,6 +30,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
+            val activity = this
             val taskViewModel: TaskViewModel = hiltViewModel()
             val settingsViewModel: SettingsViewModel = hiltViewModel()
 
@@ -53,6 +54,7 @@ class MainActivity : ComponentActivity() {
                         onUpdateTask = { task -> taskViewModel.updateExistingTask(task) },
                         taskViewModel = taskViewModel,
                         settingsViewModel = settingsViewModel,
+                        activity = activity
                     )
                 }
             }

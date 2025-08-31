@@ -1,5 +1,6 @@
 package com.example.taskwhiz.presentation.ui.screen.taskListScreen.components
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +24,7 @@ fun TaskItem(
     modifier: Modifier = Modifier,
     onEditClick: (Task) -> Unit,
     onDeleteClick: (Task) -> Unit,
+    onShareClick: (Task) -> Unit,
     onToggle: () -> Unit,
 ) {
     val formattedTime = remember(task.lastModifiedAt) {
@@ -76,8 +78,8 @@ fun TaskItem(
                     }
                     TaskOverflowMenu(
                         onEditClick = { onEditClick(task) },
-                        onDeleteClick = { onDeleteClick(task) }
-                    )
+                        onDeleteClick = { onDeleteClick(task) },
+                        onShareClick = { onShareClick(task) })
                 }
                 if (showBadges) {
                     Spacer(Modifier.height(AppDimens.PaddingMedium))

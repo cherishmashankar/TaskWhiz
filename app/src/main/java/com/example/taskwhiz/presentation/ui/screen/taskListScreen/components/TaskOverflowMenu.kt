@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -25,21 +26,23 @@ import com.example.taskwhiz.R
 @Composable
 fun TaskOverflowMenu(
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    onShareClick: () -> Unit
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
     Box {
         IconButton(
             onClick = { menuExpanded = true },
-            ) {
+        ) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
-               contentDescription = stringResource(R.string.more_options),
+                contentDescription = stringResource(R.string.more_options),
                 modifier = Modifier.size(20.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
         }
+
         DropdownMenu(
             expanded = menuExpanded,
             onDismissRequest = { menuExpanded = false }
@@ -54,6 +57,21 @@ fun TaskOverflowMenu(
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = stringResource(R.string.manage_task),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            )
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.share_task)) }, // 👈 share label
+                onClick = {
+                    menuExpanded = false
+                    onShareClick()
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = stringResource(R.string.share_task),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }

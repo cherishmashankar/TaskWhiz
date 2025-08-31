@@ -1,7 +1,11 @@
 package com.example.taskwhiz.presentation.ui.screen.taskListScreen
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.background
@@ -16,6 +20,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.taskwhiz.R
 import com.example.taskwhiz.navigation.Screen
+import com.example.taskwhiz.presentation.sharetask.shareTask
 import com.example.taskwhiz.presentation.ui.model.FilterItem
 import com.example.taskwhiz.presentation.utils.TaskFilters
 import com.example.taskwhiz.presentation.ui.screen.taskListScreen.components.FilterCard
@@ -42,8 +48,10 @@ import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
 fun TaskListScreen(
     taskViewModel: TaskViewModel = hiltViewModel() ,
     settingsViewModel: SettingsViewModel = hiltViewModel(),
-    navController: NavHostController   // 👈 pass navController in
+    navController: NavHostController,
+    activity: Activity
 ) {
+
 
     val tasks by taskViewModel.tasks.collectAsState(initial = emptyList())
     val visibleTasks by taskViewModel.visibleTasks.collectAsState(initial = emptyList())
@@ -199,6 +207,11 @@ fun TaskListScreen(
                                 onDeleteClick = { clickedTask ->
                                     taskViewModel.deleteTask(clickedTask)
                                 },
+                                onShareClick = {clickedTask ->
+                                    activity?.let { shareTask(it, clickedTask) }
+                                    Log.d("ShareTask", "Launching chooser for task share $activity")
+
+                                },
                                 onToggle = { taskViewModel.toggleTaskCompletion(task) }
                             )
                             Spacer(Modifier.height(AppDimens.PaddingSmall))
@@ -209,4 +222,10 @@ fun TaskListScreen(
         }
 
     }
+}
+
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
