@@ -67,7 +67,7 @@
     <string name="share_task_priority_high">⭐ Priorität: %1$s</string>
     <string name="share_task_priority_high_label">Hoch</string>
     <string name="share_task_subtasks">Teilaufgaben:</string>
-    <string name="share_task_subtask_item">• %1$s</string>
+    <string name="share_task_subtask_item">•  %1$s</string>
 
 
 </resources>

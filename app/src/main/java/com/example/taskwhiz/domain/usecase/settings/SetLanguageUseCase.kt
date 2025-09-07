@@ -1,4 +1,4 @@
-package com.example.taskwhiz.domain.usecase
+package com.example.taskwhiz.domain.usecase.settings
 
 
 import com.example.taskwhiz.domain.model.Language

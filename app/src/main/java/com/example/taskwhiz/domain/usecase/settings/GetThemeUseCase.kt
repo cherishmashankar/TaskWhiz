@@ -1,7 +1,6 @@
-package com.example.taskwhiz.domain.usecase
+package com.example.taskwhiz.domain.usecase.settings
 
 import com.example.taskwhiz.domain.model.AppTheme
-import com.example.taskwhiz.domain.model.Language
 import com.example.taskwhiz.domain.repository.PreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.taskwhiz.domain.model.Language
 import com.example.taskwhiz.domain.model.AppTheme
-import com.example.taskwhiz.domain.usecase.GetLanguageUseCase
-import com.example.taskwhiz.domain.usecase.GetThemeUseCase
-import com.example.taskwhiz.domain.usecase.SetLanguageUseCase
-import com.example.taskwhiz.domain.usecase.SetThemeUseCase
+import com.example.taskwhiz.domain.usecase.settings.GetLanguageUseCase
+import com.example.taskwhiz.domain.usecase.settings.GetThemeUseCase
+import com.example.taskwhiz.domain.usecase.settings.SetLanguageUseCase
+import com.example.taskwhiz.domain.usecase.settings.SetThemeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

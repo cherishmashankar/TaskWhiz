@@ -1,4 +1,4 @@
-package com.example.taskwhiz.presentation.filters
+package com.example.taskwhiz.presentation.helpers
 
 import android.text.format.DateUtils
 import com.example.taskwhiz.domain.model.Task

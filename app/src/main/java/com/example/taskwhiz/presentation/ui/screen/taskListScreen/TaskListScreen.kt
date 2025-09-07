@@ -20,7 +20,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.taskwhiz.R
 import com.example.taskwhiz.navigation.Screen
-import com.example.taskwhiz.presentation.sharetask.shareTask
+import com.example.taskwhiz.presentation.helpers.shareTask
 import com.example.taskwhiz.presentation.ui.model.FilterItem
 import com.example.taskwhiz.presentation.utils.TaskFilters
 import com.example.taskwhiz.presentation.ui.screen.taskListScreen.components.FilterCard

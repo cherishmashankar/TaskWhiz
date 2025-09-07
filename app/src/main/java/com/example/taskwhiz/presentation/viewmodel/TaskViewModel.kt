@@ -2,19 +2,15 @@ package com.example.taskwhiz.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.taskwhiz.domain.model.AppTheme
-import com.example.taskwhiz.domain.model.Language
 import com.example.taskwhiz.domain.model.Task
-import com.example.taskwhiz.domain.usecase.DeleteTaskUseCase
-import com.example.taskwhiz.domain.usecase.GetAllTasksUseCase
-import com.example.taskwhiz.domain.usecase.GetLanguageUseCase
-import com.example.taskwhiz.domain.usecase.GetTaskByIdUseCase
-import com.example.taskwhiz.domain.usecase.GetThemeUseCase
-import com.example.taskwhiz.domain.usecase.InsertTaskUseCase
-import com.example.taskwhiz.domain.usecase.SetLanguageUseCase
-import com.example.taskwhiz.domain.usecase.SetThemeUseCase
-import com.example.taskwhiz.domain.usecase.UpdateTaskUseCase
-import com.example.taskwhiz.presentation.filters.TaskUiFilterHelper
+import com.example.taskwhiz.domain.usecase.reminder.CancelReminderUseCase
+import com.example.taskwhiz.domain.usecase.reminder.ScheduleReminderUseCase
+import com.example.taskwhiz.domain.usecase.task.DeleteTaskUseCase
+import com.example.taskwhiz.domain.usecase.task.GetAllTasksUseCase
+import com.example.taskwhiz.domain.usecase.task.GetTaskByIdUseCase
+import com.example.taskwhiz.domain.usecase.task.InsertTaskUseCase
+import com.example.taskwhiz.domain.usecase.task.UpdateTaskUseCase
+import com.example.taskwhiz.presentation.helpers.TaskUiFilterHelper
 import com.example.taskwhiz.presentation.utils.TaskFilters
 import com.example.taskwhiz.presentation.utils.TaskStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,8 +18,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,7 +29,9 @@ class TaskViewModel @Inject constructor(
     private val insertTaskUseCase: InsertTaskUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
-    private val getTaskByIdUseCase: GetTaskByIdUseCase
+    private val getTaskByIdUseCase: GetTaskByIdUseCase,
+/*    private val scheduleReminderUseCase: ScheduleReminderUseCase,
+    private val cancelReminderUseCase: CancelReminderUseCase*/
 ) : ViewModel() {
 
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
@@ -54,19 +50,31 @@ class TaskViewModel @Inject constructor(
         }
     }
 
+    fun addNewTask(task: Task) = viewModelScope.launch {
+        insertTaskUseCase(task)
+/*        if (task.reminderAt != null) {
+            scheduleReminderUseCase(task)
+        }*/
+    }
 
-    fun addNewTask(task: Task) = viewModelScope.launch { insertTaskUseCase(task) }
-
-    fun updateExistingTask(task: Task) = viewModelScope.launch { updateTaskUseCase(task) }
+    fun updateExistingTask(task: Task) = viewModelScope.launch {
+        updateTaskUseCase(task)
+/*        cancelReminderUseCase(task.id)
+        if (task.reminderAt != null) {
+            scheduleReminderUseCase(task)
+        }*/
+    }
 
     fun deleteTask(task: Task) = viewModelScope.launch {
         deleteTaskUseCase(task)
-        getAllTasksUseCase().collect { _tasks.value = it }
+    /*    cancelReminderUseCase(task.id)*/
     }
 
-    fun toggleTaskCompletion(task: Task) =
-        viewModelScope.launch { updateTaskUseCase(task.copy(isCompleted = !task.isCompleted)) }
+    fun toggleTaskCompletion(task: Task) = viewModelScope.launch {
+        val updated = task.copy(isCompleted = !task.isCompleted)
+        updateTaskUseCase(updated)
 
+    }
 
     fun getTaskById(id: Long) = getTaskByIdUseCase(id)
 

@@ -16,6 +16,8 @@ coroutines = "1.7.3"
 hilt = "2.51"
 hiltWork = "1.2.0"
 leakcanary = "2.13"
+workRuntimeKtx = "2.10.3"
+hiltCommon = "1.2.0"
 
 
 [libraries]
@@ -58,6 +60,8 @@ hilt-work-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.
 
 # LeakCanary
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
+androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

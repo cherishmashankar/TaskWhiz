@@ -1,4 +1,4 @@
-package com.example.taskwhiz.domain.usecase
+package com.example.taskwhiz.domain.usecase.task
 
 import com.example.taskwhiz.data.helper.AiSyncHelper
 import com.example.taskwhiz.domain.repository.TaskRepository
