@@ -32,7 +32,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    // Room Database
+
     @Provides
     @Singleton
     fun provideDatabase(app: Application): TaskDatabase {
@@ -47,8 +47,9 @@ object AppModule {
     // Retrofit
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit = Retrofit.Builder()
-        .baseUrl("https://router.huggingface.co/sambanova/") // Replace with your API base
+    fun provideRetrofit(): Retrofit = Retrofit
+        .Builder()
+        .baseUrl("https://router.huggingface.co/sambanova/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

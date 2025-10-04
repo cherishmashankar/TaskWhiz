@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "160368506606",
+    "project_id": "taskwhiz-a492e",
+    "storage_bucket": "taskwhiz-a492e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:160368506606:android:62ede4273157d0aa9d65ff",
+        "android_client_info": {
+          "package_name": "com.example.taskwhiz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAExzhasGtZaSv1IrT25BNwA_vJKn7erSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -7,7 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-// Use constant instead of hardcoding "settings"
+
 val Context.dataStore by preferencesDataStore(name = PreferencesConstants.DATASTORE_NAME)
 
 object PreferencesKeys {

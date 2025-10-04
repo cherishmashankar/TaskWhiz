@@ -30,8 +30,6 @@ class TaskViewModel @Inject constructor(
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val getTaskByIdUseCase: GetTaskByIdUseCase,
-/*    private val scheduleReminderUseCase: ScheduleReminderUseCase,
-    private val cancelReminderUseCase: CancelReminderUseCase*/
 ) : ViewModel() {
 
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
@@ -52,22 +50,14 @@ class TaskViewModel @Inject constructor(
 
     fun addNewTask(task: Task) = viewModelScope.launch {
         insertTaskUseCase(task)
-/*        if (task.reminderAt != null) {
-            scheduleReminderUseCase(task)
-        }*/
     }
 
     fun updateExistingTask(task: Task) = viewModelScope.launch {
         updateTaskUseCase(task)
-/*        cancelReminderUseCase(task.id)
-        if (task.reminderAt != null) {
-            scheduleReminderUseCase(task)
-        }*/
     }
 
     fun deleteTask(task: Task) = viewModelScope.launch {
         deleteTaskUseCase(task)
-    /*    cancelReminderUseCase(task.id)*/
     }
 
     fun toggleTaskCompletion(task: Task) = viewModelScope.launch {

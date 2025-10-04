@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
 
         setContent {
@@ -61,5 +62,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+                //throw RuntimeException("Test Crash: Firebase Crashlytics is working!")
     }
 }

@@ -21,7 +21,7 @@ abstract class TaskDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: TaskDatabase? = null
 
-        fun getInstance(context: Context): TaskDatabase {
+/*        fun getInstance(context: Context): TaskDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
@@ -32,6 +32,6 @@ abstract class TaskDatabase : RoomDatabase() {
                 INSTANCE = instance
                 instance
             }
-        }
+        }*/
     }
 }

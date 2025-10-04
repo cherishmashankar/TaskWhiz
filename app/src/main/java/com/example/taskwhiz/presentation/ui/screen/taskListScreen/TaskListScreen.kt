@@ -207,7 +207,7 @@ fun TaskListScreen(
                                     taskViewModel.deleteTask(clickedTask)
                                 },
                                 onShareClick = {clickedTask ->
-                                    activity?.let { shareTask(it, clickedTask) }
+                                    shareTask(activity, clickedTask)
                                     Log.d("ShareTask", "Launching chooser for task share $activity")
 
                                 },
@@ -223,8 +223,3 @@ fun TaskListScreen(
     }
 }
 
-fun Context.findActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
-}

@@ -13,7 +13,7 @@ object TaskUiFilterHelper {
         status: String
     ): List<Task> {
         return tasks.filter { task ->
-            val matchesSearch = task.title.contains(search, ignoreCase = true)
+            val matchesSearch = task.title.contains(search.trim(), ignoreCase = true)
 
             val matchesStatus = when (status) {
                 TaskStatus.COMPLETED -> task.isCompleted
