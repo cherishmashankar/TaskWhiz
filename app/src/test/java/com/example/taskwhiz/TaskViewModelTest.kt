@@ -118,6 +118,7 @@ class TaskViewModelTest {
         }
     }
 
+
     @Test
     fun `search and status update visibleTasks`() = runTest {
         val task = Task(id = 5L, title = "Search Me", createdAt = System.currentTimeMillis())
@@ -130,10 +131,12 @@ class TaskViewModelTest {
         viewModel.status.value = TaskStatus.ALL
 
         viewModel.visibleTasks.test {
+            skipItems(1)
             val list = awaitItem()
             assert(list.any { it.title.contains("Search Me") })
         }
     }
+
 
     @Test
     fun `search should handle empty task titles without crashing`() = runTest {
@@ -146,6 +149,7 @@ class TaskViewModelTest {
         viewModel.search.value = "anything"
 
         viewModel.visibleTasks.test {
+
             val result = awaitItem()
             assertThat(result).isEmpty()
         }
@@ -200,7 +204,7 @@ class TaskViewModelTest {
         verify(updateTask).invoke(task.copy(isCompleted = false))
     }
 
-/*    @Test
+   @Test
     fun `empty filters and empty search should return all tasks`() = runTest {
         val tasks = listOf(
             Task(id = 6L, title = "Task A", createdAt = System.currentTimeMillis()),
@@ -212,8 +216,9 @@ class TaskViewModelTest {
         advanceUntilIdle()
 
         viewModel.visibleTasks.test {
+            skipItems(1)
             val result = awaitItem()
             assertThat(result).containsExactlyElementsIn(tasks)
         }
-    }*/
+    }
 }

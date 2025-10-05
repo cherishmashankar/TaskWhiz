@@ -39,6 +39,7 @@ object AppModule {
         return Room.databaseBuilder(app, TaskDatabase::class.java, "task_db")
             .fallbackToDestructiveMigration()
             .build()
+
     }
 
     @Provides

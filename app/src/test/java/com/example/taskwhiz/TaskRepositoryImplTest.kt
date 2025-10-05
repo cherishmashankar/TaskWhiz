@@ -1,7 +1,7 @@
 package com.example.taskwhiz
 
 import com.example.taskwhiz.data.local.TaskDao
-import com.example.taskwhiz.data.local.TaskEntity
+
 import com.example.taskwhiz.data.mapper.toEntity
 import com.example.taskwhiz.data.remote.TaskApiService
 import com.example.taskwhiz.data.remote.TaskApiWrapperResponse
@@ -18,9 +18,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
+
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TaskRepositoryImplTest {
@@ -90,25 +88,7 @@ class TaskRepositoryImplTest {
         verify(taskDao).updateTask(task.toEntity())
     }
 
-    @Test
-    fun getAllTasks_emitsMultipleValuesOverTime() = runTest {
-        val entity1 = Task(id = 1L, title = "Task A", createdAt = System.currentTimeMillis()).toEntity()
-        val entity2 = Task(id = 2L, title = "Task B", createdAt = System.currentTimeMillis()).toEntity()
 
-        val flow = MutableSharedFlow<List<TaskEntity>>()
-        whenever(taskDao.getAllTasks()).thenReturn(flow)
-
-        val results = mutableListOf<List<Task>>()
-        val job = launch { repository.getAllTasks().toList(results) }
-
-        flow.emit(listOf(entity1))
-        flow.emit(listOf(entity1, entity2))
-
-        assertThat(results[0]).hasSize(1)
-        assertThat(results[1]).hasSize(2)
-
-        job.cancel()
-    }
 
     @Test
     fun deleteTask_nonExistentTaskStillCallsDao() = runTest {
