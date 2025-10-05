@@ -80,14 +80,12 @@ class TaskRepositoryImplTest {
         assertThat(result).isEmpty()
     }
 
-
     @Test
     fun updateTask_callsDaoUpdate() = runTest {
         val task = Task(id = 2L, title = "Update Me", createdAt = System.currentTimeMillis())
         repository.updateTask(task)
         verify(taskDao).updateTask(task.toEntity())
     }
-
 
 
     @Test
