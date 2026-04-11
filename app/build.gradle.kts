@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.example.taskwhiz"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.taskwhiz"
@@ -102,7 +102,7 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:2.9.3")
 
-    // WorkManager
+    // WorkManage
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 
 

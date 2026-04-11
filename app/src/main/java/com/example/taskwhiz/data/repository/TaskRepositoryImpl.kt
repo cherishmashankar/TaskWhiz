@@ -42,11 +42,6 @@ class TaskRepositoryImpl @Inject constructor(
     }
 
 
-
-    override suspend fun getMessyTasks(): List<Task> {
-        return taskDao.getMessyTasks().map { it.toDomain() }
-    }
-
     override suspend fun insertMessyNote(rawInput: String): Long {
         val timestamp = System.currentTimeMillis()
         return taskDao.insertTask(
@@ -60,33 +55,5 @@ class TaskRepositoryImpl @Inject constructor(
         )
     }
 
-    suspend fun syncMessyTasks(currentTime: Long) = withContext(Dispatchers.IO) {
-        val messyTasks = taskDao.getMessyTasks()
 
-        messyTasks.forEach { taskEntity ->
-            try {
-                val requestBody = AiUtils.createAiRequest(taskEntity.rawInput.orEmpty())
-                val apiResponse = taskApiService.getStructuredTask(requestBody)
-                val content = apiResponse.choices.firstOrNull()?.message?.content ?: return@forEach
-
-                val structuredTask: TaskResponse = AiUtils.parseAiContent(content) ?: return@forEach
-
-                val updatedTask = taskEntity.copy(
-                    title = structuredTask.title,
-                    tag = structuredTask.tag,
-                    dueAt = structuredTask.dueAt,
-                    reminderAt = structuredTask.reminderAt,
-                    taskItems = structuredTask.taskItems,
-                    priorityLevel = structuredTask.priorityLevel ?: 2,
-                    isMessy = false,
-                    lastModifiedAt = currentTime
-                )
-
-                taskDao.updateTask(updatedTask)
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 }

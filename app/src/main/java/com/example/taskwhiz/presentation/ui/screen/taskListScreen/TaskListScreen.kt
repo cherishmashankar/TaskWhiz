@@ -121,7 +121,6 @@ fun TaskListScreen(
         ) {
 
             item {
-
                 Spacer(Modifier.height(AppDimens.PaddingXLarge))
                 TaskSearchBar(
                     query = taskViewModel.search.collectAsState().value,
@@ -209,7 +208,6 @@ fun TaskListScreen(
                                 onShareClick = {clickedTask ->
                                     shareTask(activity, clickedTask)
                                     Log.d("ShareTask", "Launching chooser for task share $activity")
-
                                 },
                                 onToggle = { taskViewModel.toggleTaskCompletion(task) }
                             )
