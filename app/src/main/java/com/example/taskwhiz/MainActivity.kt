@@ -21,7 +21,6 @@ import com.example.taskwhiz.presentation.ui.theme.TaskWhizTheme
 import com.example.taskwhiz.presentation.utils.updateLocale
 import com.example.taskwhiz.presentation.viewmodel.SettingsViewModel
 import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
-
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -45,9 +44,6 @@ class MainActivity : ComponentActivity() {
                 context.updateLocale(language)
             }
 
-            CompositionLocalProvider(
-                LocalContext provides localizedContext
-            ) {
                 TaskWhizTheme(darkTheme = theme == AppTheme.DARK) {
                     val navController = rememberNavController()
 
@@ -60,7 +56,7 @@ class MainActivity : ComponentActivity() {
                         activity = activity
                     )
                 }
-            }
+
         }
                 //throw RuntimeException("Test Crash: Firebase Crashlytics is working!")
     }

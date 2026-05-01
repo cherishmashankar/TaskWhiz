@@ -1,34 +1,35 @@
 package com.example.taskwhiz
 
 import com.example.taskwhiz.data.local.TaskDao
-
 import com.example.taskwhiz.data.mapper.toEntity
 import com.example.taskwhiz.data.remote.TaskApiService
 import com.example.taskwhiz.data.remote.TaskApiWrapperResponse
 import com.example.taskwhiz.data.repository.TaskRepositoryImpl
 import com.example.taskwhiz.domain.model.Task
-import com.example.taskwhiz.domain.repository.TaskRepository
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import com.google.common.truth.Truth.assertThat
-
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TaskRepositoryImplTest {
 
     private lateinit var taskDao: TaskDao
-    private lateinit var repository: TaskRepository
+    private lateinit var repository: TaskRepositoryImpl
+
+    private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
         taskDao = mock()
+
         val fakeApi = object : TaskApiService {
             override suspend fun getStructuredTask(
                 requestBody: Map<String, Any>
@@ -36,40 +37,65 @@ class TaskRepositoryImplTest {
                 throw UnsupportedOperationException("Not needed for this test")
             }
         }
-        repository = TaskRepositoryImpl(taskDao, fakeApi)
+
+        repository = TaskRepositoryImpl(
+            taskDao = taskDao,
+            taskApiService = fakeApi,
+            ioDispatcher = testDispatcher
+        )
     }
 
     @Test
     fun insertTask_callsDaoInsert() = runTest {
-        val task = Task(id = 1L, title = "Test Task", createdAt = System.currentTimeMillis())
+        val task = Task(
+            id = 1L,
+            title = "Test Task",
+            createdAt = System.currentTimeMillis()
+        )
+
         repository.insertTask(task)
+
         verify(taskDao).insertTask(task.toEntity())
     }
 
     @Test
     fun getAllTasks_returnsTasksFromDao() = runTest {
-        val task = Task(id = 1L, title = "From DAO", createdAt = System.currentTimeMillis())
+        val task = Task(
+            id = 1L,
+            title = "From DAO",
+            createdAt = System.currentTimeMillis()
+        )
         val entity = task.toEntity()
+
         whenever(taskDao.getAllTasks()).thenReturn(flowOf(listOf(entity)))
+
         val result = repository.getAllTasks().first()
+
         assertThat(result).hasSize(1)
         assertThat(result[0].title).isEqualTo("From DAO")
     }
 
     @Test
     fun deleteTask_callsDaoDelete() = runTest {
-        val task = Task(id = 1L, title = "Delete Me", createdAt = System.currentTimeMillis())
+        val task = Task(
+            id = 1L,
+            title = "Delete Me",
+            createdAt = System.currentTimeMillis()
+        )
+
         repository.deleteTask(task)
+
         verify(taskDao).deleteTask(task.toEntity())
     }
 
     @Test
     fun getTaskById_returnsNullIfNotFound() = runTest {
         whenever(taskDao.getTaskById(999L)).thenReturn(flowOf(null))
+
         val result = repository.getTaskById(999L).first()
+
         assertThat(result).isNull()
     }
-
 
     @Test
     fun getAllTasks_returnsEmptyListWhenDaoEmpty() = runTest {
@@ -82,19 +108,27 @@ class TaskRepositoryImplTest {
 
     @Test
     fun updateTask_callsDaoUpdate() = runTest {
-        val task = Task(id = 2L, title = "Update Me", createdAt = System.currentTimeMillis())
+        val task = Task(
+            id = 2L,
+            title = "Update Me",
+            createdAt = System.currentTimeMillis()
+        )
+
         repository.updateTask(task)
+
         verify(taskDao).updateTask(task.toEntity())
     }
 
-
     @Test
     fun deleteTask_nonExistentTaskStillCallsDao() = runTest {
-        val task = Task(id = 999L, title = "Ghost Task", createdAt = System.currentTimeMillis())
+        val task = Task(
+            id = 999L,
+            title = "Ghost Task",
+            createdAt = System.currentTimeMillis()
+        )
+
         repository.deleteTask(task)
+
         verify(taskDao).deleteTask(task.toEntity())
     }
-
-
-
 }
