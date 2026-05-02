@@ -23,10 +23,6 @@ import com.example.taskwhiz.presentation.ui.taskEditorScreen.TaskEditorScreen
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
-    onSaveTask: (Task) -> Unit,
-    onUpdateTask: (Task) -> Unit,
-    taskViewModel: TaskViewModel,
-
     activity: Activity
 ) {
     NavHost(
@@ -49,25 +45,11 @@ fun AppNavGraph(
                     defaultValue = -1L
                 }
             )
-        ) { backStackEntry ->
-            val taskId = backStackEntry.arguments?.getLong("taskId") ?: -1L
-
-            val task by taskViewModel
-                .getTaskById(taskId)
-                .collectAsState(initial = null)
-
+        ) {
             TaskEditorScreen(
-                task = if (taskId == -1L) null else task,
-                onSave = {
-                    onSaveTask(it)
-                    navController.popBackStack()
-                },
-                onDismiss = { navController.popBackStack() },
-                onUpdate = {
-                    onUpdateTask(it)
-                    navController.popBackStack()
-                }
+                onBack = { navController.popBackStack() }
             )
         }
+
     }
 }

@@ -2,6 +2,7 @@ package com.example.taskwhiz.presentation.ui.taskEditorScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -18,12 +19,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.core.graphics.toColorInt
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.ColorPaletteSelector
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.SubtaskList
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.TaskEditorMoreOptionSection
@@ -31,23 +40,23 @@ import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.TaskEdit
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.TaskTitleInput
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.TimePickerDialog
 import kotlinx.coroutines.android.awaitFrame
+import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskEditorScreen(
-    task: Task? = null,
-    onSave: (Task) -> Unit,
-    onDismiss: () -> Unit,
-    onUpdate: (Task) -> Unit,
+    onBack: () -> Unit,
+    viewModel: TaskEditorViewModel = hiltViewModel()
 ) {
+    val task by viewModel.task.collectAsStateWithLifecycle()
 
     var title by rememberSaveable(task?.id) { mutableStateOf(task?.title ?: "") }
     var selectedColor by rememberSaveable(task?.id) { mutableStateOf(task?.colorCode ?: "#FF6F61") }
     var subtasks by rememberSaveable(task?.id) { mutableStateOf(task?.taskItems ?: listOf("")) }
     var dueDate by rememberSaveable(task?.id) { mutableStateOf<Long?>(task?.dueAt) }
     var reminderDate by rememberSaveable(task?.id) { mutableStateOf<Long?>(task?.reminderAt) }
-    var taskPriority by rememberSaveable(task?.id) { mutableStateOf(task?.priorityLevel ?: 0) }
+    var taskPriority by rememberSaveable(task?.id) { mutableIntStateOf(task?.priorityLevel ?: 0) }
 
     var showDatePickerForDue by remember { mutableStateOf(false) }
     var showDatePickerForReminder by remember { mutableStateOf(false) }
@@ -55,7 +64,27 @@ fun TaskEditorScreen(
     var pendingReminderDate by remember { mutableStateOf<Long?>(null) }
     var showTitleError by remember { mutableStateOf(false) }
 
-    // Shared Task Builder
+
+    val dateValidator = remember {
+        object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                // Allow dates from the start of today onwards
+                val calendar = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                return utcTimeMillis >= calendar.timeInMillis
+            }
+
+            override fun isSelectableYear(year: Int): Boolean {
+                return year >= Calendar.getInstance().get(Calendar.YEAR)
+            }
+        }
+    }
+
+
     fun buildTask(): Task = Task(
         id = task?.id ?: 0L,
         title = title.trim(),
@@ -70,40 +99,45 @@ fun TaskEditorScreen(
 
     Scaffold(
         topBar = {
-            val buttonTextStyle = MaterialTheme.typography.titleMedium.copy(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-
             TopAppBar(
-                title = {},
+                modifier = Modifier
+                    .padding(horizontal = AppDimens.PaddingMedium)
+                    .background(MaterialTheme.colorScheme.background),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background, // Your #0D0D0D
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                ),
+                title = { },
                 navigationIcon = {
-                    TextButton(onClick = onDismiss) {
-                        Text(
-                            text = stringResource(R.string.cancel),
-                            style = buttonTextStyle
+                    FilledTonalIconButton(
+                        onClick = { onBack() },
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
                         )
+                    ) {
+                        Icon(Icons.Default.Close, contentDescription = "Cancel")
                     }
                 },
                 actions = {
-                    TextButton(
+                    FilledTonalIconButton(
                         onClick = {
-                            if (title.isBlank()) {
-                                showTitleError = true
-                                return@TextButton
-                            }
                             val built = buildTask()
-                            if (task == null) onSave(built) else onUpdate(built)
-                        },
+                            viewModel.saveTask(built)
+                            onBack() },
                         enabled = title.isNotBlank(),
-                        modifier = Modifier.padding(top = 12.dp)
-                    ) {
-                        Text(
-                            text = if (task == null) stringResource(R.string.add_task) else stringResource(R.string.update_task),
-                            style = buttonTextStyle,
-                            color = if (title.isNotBlank()) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+                            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                        ),
 
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = "Save"
                         )
                     }
                 }
@@ -117,10 +151,8 @@ fun TaskEditorScreen(
                 .padding(horizontal = AppDimens.PaddingLarge)
                 .verticalScroll(rememberScrollState())
         ) {
-
             val titleFocusRequester = remember { FocusRequester() }
             val keyboard = LocalSoftwareKeyboardController.current
-
             LaunchedEffect(Unit) {
                 if ( task == null) {
                     awaitFrame()
@@ -128,39 +160,39 @@ fun TaskEditorScreen(
                     keyboard?.show()
                 }
             }
-
-            Spacer(Modifier.height(AppDimens.PaddingMedium))
-
+            Spacer(Modifier.height(AppDimens.PaddingLarge))
+            Card(
+                shape = RoundedCornerShape(AppDimens.CornerSmall),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                modifier = Modifier.fillMaxWidth()
+            ){
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(horizontal = AppDimens.PaddingMedium, vertical = AppDimens.PaddingMedium)
-                ) {
-                    TaskTitleInput(
-                        title = title,
-                        onTitleChange = { title = it },
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(titleFocusRequester),
-                        selectedColor = selectedColor
-                    )
-
-                    TaskEditorOverflowMenu(
-                        hasDue = dueDate != null,
-                        hasReminder = reminderDate != null,
-                        onRequestSetDueDate = { showDatePickerForDue = true },
-                        onRequestSetReminder = { showDatePickerForReminder = true },
-                        onClearDueDate = { dueDate = null },
-                        onClearReminder = { reminderDate = null },
-                        hasHighPriority = (taskPriority == 1),
-                        onSetHighPriority = { taskPriority = 1 },
-                        onClearPriority = { taskPriority = 0 }
-                    )
-                }
-
-
-
-
+                verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = AppDimens.CornerSmall)
+            ) {
+                TaskTitleInput(
+                    title = title,
+                    onTitleChange = { title = it },
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusRequester(titleFocusRequester),
+                    selectedColor = selectedColor
+                )
+                TaskEditorOverflowMenu(
+                    hasDue = dueDate != null,
+                    hasReminder = reminderDate != null,
+                    onRequestSetDueDate = { showDatePickerForDue = true },
+                    onRequestSetReminder = { showDatePickerForReminder = true },
+                    onClearDueDate = { dueDate = null },
+                    onClearReminder = { reminderDate = null },
+                    hasHighPriority = (taskPriority == 1),
+                    onSetHighPriority = { taskPriority = 1 },
+                    onClearPriority = { taskPriority = 0 }
+                )
+            }}
 
             if (showTitleError && title.isBlank()) {
                 Text(
@@ -175,20 +207,18 @@ fun TaskEditorScreen(
             Card(
                 shape = RoundedCornerShape(AppDimens.CornerLarge),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
+                    containerColor = MaterialTheme.colorScheme.background
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
 
-                ColorPaletteSelector(
-                    selectedColor = selectedColor,
-                    onColorChange = { selectedColor = it }
-                )
+                    ColorPaletteSelector(
+                        selectedColor = selectedColor,
+                        onColorChange = { selectedColor = it }
+                    )
             }
-
                 Spacer(Modifier.height(AppDimens.PaddingLarge))
-
                 TaskEditorMoreOptionSection(
                     dueDate = dueDate,
                     reminderDate = reminderDate,
@@ -198,22 +228,20 @@ fun TaskEditorScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-
             Spacer(Modifier.height(AppDimens.PaddingLarge))
-
             SubtaskList(
                 subtasks = subtasks,
                 onSubtasksChange = { subtasks = it }
             )
             Spacer(Modifier.height(AppDimens.PaddingXLarge))
-
         }
     }
 
     // --- Date/Time Pickers ---
     if (showDatePickerForDue) {
         val duePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = dueDate ?: System.currentTimeMillis()
+            initialSelectedDateMillis = dueDate ?: System.currentTimeMillis(),
+            selectableDates = dateValidator
         )
         DatePickerDialog(
             onDismissRequest = { showDatePickerForDue = false },
@@ -237,7 +265,8 @@ fun TaskEditorScreen(
 
     if (showDatePickerForReminder) {
         val reminderPickerState = rememberDatePickerState(
-            initialSelectedDateMillis = reminderDate ?: System.currentTimeMillis()
+            initialSelectedDateMillis = reminderDate ?: System.currentTimeMillis(),
+            selectableDates = dateValidator
         )
         DatePickerDialog(
             onDismissRequest = { showDatePickerForReminder = false },
@@ -265,7 +294,6 @@ fun TaskEditorScreen(
             selectedDateMillis = pendingReminderDate!!,
             onTimeSelected = { finalMillis -> reminderDate = finalMillis },
             onDismiss = {
-                showTimePicker = false
                 pendingReminderDate = null
             }
         )

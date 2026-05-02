@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.taskwhiz.domain.model.Task
@@ -29,12 +31,11 @@ fun TaskItem(
     val formattedTime = remember(task.lastModifiedAt) {
         task.lastModifiedAt.toFullDateTime()
     }
-    val showBadges = task.dueAt != null || task.reminderAt != null || task.priorityLevel == 1
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingSmall)
+            .padding(horizontal = AppDimens.PaddingLarge, vertical = AppDimens.PaddingXSmall)
             .clickable { onEditClick(task) },
         shape = RoundedCornerShape(AppDimens.CornerMedium),
         elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.PaddingSmall),
@@ -42,7 +43,6 @@ fun TaskItem(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
-
         Row(
             modifier = modifier
                 .fillMaxWidth()
@@ -58,12 +58,13 @@ fun TaskItem(
                         colorHex = task.colorCode,
                         onToggle = onToggle
                     )
-                    Spacer(Modifier.width(AppDimens.PaddingLarge))
+                    Spacer(Modifier.width(AppDimens.PaddingXLarge))
                     Column(Modifier.weight(1f)) {
                         Text(
                             text = task.title,
                             style = MaterialTheme.typography.titleMedium.copy(
                                 textDecoration = TextDecoration.None,
+                                fontWeight = FontWeight.SemiBold
                             ),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -76,19 +77,10 @@ fun TaskItem(
                         )
                     }
                     TaskOverflowMenu(
-                        onEditClick = { onEditClick(task) },
                         onDeleteClick = { onDeleteClick(task) },
                         onShareClick = { onShareClick(task) })
                 }
-//                if (showBadges) {
-//                    Spacer(Modifier.height(AppDimens.PaddingMedium))
-//                    TaskStatusBadges(
-//                        dueDate = task.dueAt,
-//                        reminderDate = task.reminderAt,
-//                        isHighPriority = (task.priorityLevel == 1),
-//                    )
-//                    Spacer(Modifier.height(AppDimens.PaddingXSmall))
-//                }
+
             }
 
         }

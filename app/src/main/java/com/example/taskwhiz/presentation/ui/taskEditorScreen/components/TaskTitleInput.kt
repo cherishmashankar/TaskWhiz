@@ -53,7 +53,7 @@ fun TaskTitleInput(
             ),
             modifier =  modifier
                 .fillMaxWidth()
-                .padding(vertical = AppDimens.PaddingMedium),
+                .padding(vertical = AppDimens.PaddingMedium, horizontal = AppDimens.PaddingMedium),
             decorationBox = { innerTextField ->
                 if (title.isEmpty()) {
                     Text(

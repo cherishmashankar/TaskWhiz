@@ -55,7 +55,7 @@ fun StatusFilterChips(
                     )
                 },
                 colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f),
+                    selectedContainerColor = MaterialTheme.colorScheme.primary,
                     containerColor = Color.Transparent
                 ),
                 border = if (isSelected) null else BorderStroke(

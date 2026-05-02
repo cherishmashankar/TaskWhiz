@@ -7,7 +7,7 @@
 
     <!-- Task Editor Bottom Sheet -->
     <string name="save_task">Aufgabe speichern</string>
-    <string name="update_task">Aufgabe aktualisieren</string>
+    <string name="update_task">Aufgabe</string>
     <string name="title_error_empty">Titel darf nicht leer sein</string>
 
     <!-- Dialog Buttons -->
@@ -49,7 +49,7 @@
     <string name="filter_all">Alle</string>
     <string name="filter_completed">Erledigt</string>
     <string name="filter_pending">Ausstehend</string>
-    <string name="add_task">Aufgabe hinzufügen</string>
+    <string name="add_task">Aufgabe</string>
 
     <string name="filter_today">Heute</string>
     <string name="filter_overdue">Überfällig</string>

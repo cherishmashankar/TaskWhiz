@@ -24,12 +24,10 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskListViewModel @Inject constructor(
     private val getAllTasksUseCase: GetAllTasksUseCase,
-    private val insertTaskUseCase: InsertTaskUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val getTaskByIdUseCase: GetTaskByIdUseCase,
 ) : ViewModel() {
-
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
     val tasks: StateFlow<List<Task>> = _tasks
 
@@ -46,13 +44,6 @@ class TaskListViewModel @Inject constructor(
         }
     }
 
-//    fun addNewTask(task: Task) = viewModelScope.launch {
-//        insertTaskUseCase(task)
-//    }
-//
-//    fun updateExistingTask(task: Task) = viewModelScope.launch {
-//        updateTaskUseCase(task)
-//    }
 
     fun deleteTask(task: Task) = viewModelScope.launch {
         deleteTaskUseCase(task)

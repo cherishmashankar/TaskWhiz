@@ -10,6 +10,9 @@ import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -20,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 import androidx.navigation.NavHostController
@@ -27,14 +31,17 @@ import com.example.taskwhiz.R
 import com.example.taskwhiz.navigation.Screen
 import com.example.taskwhiz.presentation.helpers.shareTask
 import com.example.taskwhiz.presentation.ui.taskListScreen.FilterItem
+import com.example.taskwhiz.presentation.ui.taskListScreen.components.FilterCard
 import com.example.taskwhiz.presentation.utils.TaskFilters
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.SectionTitle
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.StatusFilterChips
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.TaskItem
+import com.example.taskwhiz.presentation.ui.taskListScreen.components.TaskSearchBar
 import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import com.example.taskwhiz.presentation.viewmodel.SettingsViewModel
 import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
 @Composable
@@ -45,14 +52,15 @@ fun TaskListScreen(
     activity: Activity
 ) {
 
-    //TODO add title to do list
-    //TODO  Not filters quick states
-    // TOD remove UI of selected stats
-    // Two viewmodel
-    // Improve Nav graph
-    // Improve settings maybe side bar -- Later
-    // Test case improvemment
-    // over due logic wrong
+    //Add stats make logic select one stats at a time on click
+    // on click stats UI improve
+    //To do task title
+    // edit task not manage change words
+    //take system language and add as language or defualt english
+    //
+
+
+
 
 
     val tasks by taskViewModel.tasks.collectAsState(initial = emptyList())
@@ -123,6 +131,9 @@ fun TaskListScreen(
             verticalArrangement = Arrangement.spacedBy(AppDimens.PaddingXLarge)
         ) {
 
+
+
+
             item {
                 Spacer(Modifier.height(AppDimens.PaddingXLarge))
 //                TaskSearchBar(
@@ -133,6 +144,7 @@ fun TaskListScreen(
 //                    onLanguageChange = { settingsViewModel.changeLanguage(it) },
 //                    onThemeChange = { settingsViewModel.changeTheme(it) }
 //                )
+                        //SectionTitle(text = stringResource(id = R.string.title_filters))
 
                 StatusFilterChips(
                     selectedStatus = taskViewModel.status.collectAsState().value,

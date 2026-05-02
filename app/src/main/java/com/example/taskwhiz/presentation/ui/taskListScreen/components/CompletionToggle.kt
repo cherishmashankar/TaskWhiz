@@ -4,18 +4,22 @@ package com.example.taskwhiz.presentation.ui.taskListScreen.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,17 +43,18 @@ fun CompletionToggle(
 
     val bgColor by animateColorAsState(
         if (isCompleted) taskColor else Color.Transparent,
-        label = "bg"
+        animationSpec = tween(250), label = "bg"
     )
+
     val borderColor by animateColorAsState(
-        if (isCompleted) taskColor else taskColor.copy(alpha = 0.5f),
-        label = "border"
+        if (isCompleted) taskColor else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+        animationSpec = tween(250), label = "border"
     )
     val borderWidth by animateDpAsState(
         if (isCompleted) 0.dp else AppDimens.BorderNormal,
         label = "bw"
     )
-    val shape = RoundedCornerShape(AppDimens.CornerSmall)
+    val shape = RoundedCornerShape(AppDimens.CornerMedium)
 
     Box(
         modifier = Modifier
@@ -73,7 +78,8 @@ fun CompletionToggle(
                 imageVector = Icons.Default.Check,
                 contentDescription = stringResource(R.string.task_completed),
                 tint = Color.White,
-                modifier = Modifier.size(AppDimens.IconSmall)
+                modifier = Modifier.padding(AppDimens.PaddingSmall)
+                    .fillMaxSize()
             )
         }
     }

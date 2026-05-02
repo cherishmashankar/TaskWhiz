@@ -1,5 +1,6 @@
 package com.example.taskwhiz.presentation.ui.taskEditorScreen.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 
 import androidx.compose.material.icons.Icons
@@ -16,7 +17,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.example.taskwhiz.R
 import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import com.example.taskwhiz.utils.toDateOnly
@@ -40,7 +43,7 @@ fun TaskEditorMoreOptionSection(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(AppDimens.PaddingMedium),
         verticalAlignment = Alignment.CenterVertically,
-        contentPadding = PaddingValues(horizontal = AppDimens.PaddingSmall)
+        contentPadding = PaddingValues(horizontal = AppDimens.PaddingXSmall)
     ) {
         if (dueDate != null) {
             item {
@@ -56,7 +59,12 @@ fun TaskEditorMoreOptionSection(
                         )
                     },
                     colors = InputChipDefaults.inputChipColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    ),
+                    border = BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
                     )
                 )
             }
@@ -76,7 +84,12 @@ fun TaskEditorMoreOptionSection(
                         )
                     },
                     colors = InputChipDefaults.inputChipColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    ),
+                    border = BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
                     )
                 )
             }
@@ -86,7 +99,7 @@ fun TaskEditorMoreOptionSection(
             item {
                 InputChip(
                     selected = true,
-                    onClick = onSetReminderClick,
+                    onClick = {},
                     label = { Text(stringResource(R.string.high_priority)) },
                     leadingIcon = {
                         Icon(
@@ -97,7 +110,11 @@ fun TaskEditorMoreOptionSection(
                     },
                     colors = InputChipDefaults.inputChipColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        selectedContainerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.1f)
+                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    ),
+                    border = BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
                     )
                 )
             }

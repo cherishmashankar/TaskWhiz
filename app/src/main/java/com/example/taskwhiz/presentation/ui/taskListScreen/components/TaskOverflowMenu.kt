@@ -25,7 +25,6 @@ import com.example.taskwhiz.R
 
 @Composable
 fun TaskOverflowMenu(
-    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onShareClick: () -> Unit
 ) {
@@ -47,20 +46,20 @@ fun TaskOverflowMenu(
             expanded = menuExpanded,
             onDismissRequest = { menuExpanded = false }
         ) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.manage_task)) },
-                onClick = {
-                    menuExpanded = false
-                    onEditClick()
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = stringResource(R.string.manage_task),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            )
+//            DropdownMenuItem(
+//                text = { Text(stringResource(R.string.manage_task)) },
+//                onClick = {
+//                    menuExpanded = false
+//                    onEditClick()
+//                },
+//                leadingIcon = {
+//                    Icon(
+//                        imageVector = Icons.Default.Edit,
+//                        contentDescription = stringResource(R.string.manage_task),
+//                        tint = MaterialTheme.colorScheme.primary
+//                    )
+//                }
+//            )
 
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.share_task)) }, // 👈 share label
@@ -87,7 +86,7 @@ fun TaskOverflowMenu(
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = stringResource(R.string.delete_task),
-                        tint = MaterialTheme.colorScheme.error
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             )

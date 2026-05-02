@@ -33,26 +33,19 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val activity = this
-            val taskViewModel: TaskViewModel = hiltViewModel()
             val settingsViewModel: SettingsViewModel = hiltViewModel()
-
             val theme by settingsViewModel.theme.collectAsState()
-            val language by settingsViewModel.language.collectAsState()
+//            val language by settingsViewModel.language.collectAsState()
 
-            val context = LocalContext.current
-            val localizedContext = remember(language) {
-                context.updateLocale(language)
-            }
+//            val context = LocalContext.current
+//            val localizedContext = remember(language) {
+//                context.updateLocale(language)
+//            }
 
-                TaskWhizTheme(darkTheme = theme == AppTheme.DARK) {
+                TaskWhizTheme() {
                     val navController = rememberNavController()
-
                     AppNavGraph(
                         navController = navController,
-                        onSaveTask = { task -> taskViewModel.addNewTask(task) },
-                        onUpdateTask = { task -> taskViewModel.updateExistingTask(task) },
-                        taskViewModel = taskViewModel,
-                        settingsViewModel = settingsViewModel,
                         activity = activity
                     )
                 }
