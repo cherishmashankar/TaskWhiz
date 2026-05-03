@@ -7,5 +7,5 @@ import javax.inject.Inject
 class GetAllTasksUseCase @Inject constructor(
     private val repository: TaskRepository
 ) {
-    suspend operator fun invoke() = repository.getAllTasks()
+    operator fun invoke() = repository.getAllTasks()
 }

@@ -17,29 +17,28 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.example.taskwhiz.R
 import com.example.taskwhiz.navigation.Screen
 import com.example.taskwhiz.presentation.helpers.shareTask
 import com.example.taskwhiz.presentation.ui.taskListScreen.FilterItem
+import com.example.taskwhiz.presentation.ui.taskListScreen.components.CenteredLoader
+import com.example.taskwhiz.presentation.ui.taskListScreen.components.EmptyTasksScreen
+import com.example.taskwhiz.presentation.ui.taskListScreen.components.ErrorScreen
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.FilterCard
 import com.example.taskwhiz.presentation.utils.TaskFilters
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.SectionTitle
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.StatusFilterChips
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.TaskItem
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.TaskSearchBar
+import com.example.taskwhiz.presentation.ui.taskListScreen.components.TaskWhizFloatingActionButton
 import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import com.example.taskwhiz.presentation.viewmodel.SettingsViewModel
-import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -51,16 +50,7 @@ fun TaskListScreen(
     navController: NavHostController,
     activity: Activity
 ) {
-
-    //Add stats make logic select one stats at a time on click
-    // on click stats UI improve
-    //To do task title
-    // edit task not manage change words
-    //take system language and add as language or defualt english
-    //
-
-
-
+    val uiState by taskViewModel.uiState.collectAsStateWithLifecycle()
 
 
     val tasks by taskViewModel.tasks.collectAsState(initial = emptyList())
@@ -109,33 +99,30 @@ fun TaskListScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(
+            TaskWhizFloatingActionButton(
                 onClick = { navController.navigate(Screen.TaskEditor.createRoute()) },
-                modifier = Modifier.padding(AppDimens.PaddingLarge),
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_task_add),
-                    contentDescription = stringResource(id = R.string.add_task),
-                    modifier = Modifier.size(AppDimens.IconLarge + AppDimens.PaddingSmall)
-                )
-            }
+                modifier = Modifier.padding(AppDimens.PaddingLarge)
+            )
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(MaterialTheme.colorScheme.background),
-            verticalArrangement = Arrangement.spacedBy(AppDimens.PaddingXLarge)
-        ) {
 
-
-
-
-            item {
-                Spacer(Modifier.height(AppDimens.PaddingXLarge))
+        when (val state = uiState) {
+            TasksUiState.Loading -> {
+                CenteredLoader()
+            }
+            TasksUiState.Empty -> {
+                EmptyTasksScreen()
+            }
+            is TasksUiState.Success -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .background(MaterialTheme.colorScheme.background),
+                    verticalArrangement = Arrangement.spacedBy(AppDimens.PaddingXLarge)
+                ) {
+                    item {
+                        Spacer(Modifier.height(AppDimens.PaddingXLarge))
 //                TaskSearchBar(
 //                    query = taskViewModel.search.collectAsState().value,
 //                    onQueryChange = { taskViewModel.search.value = it },
@@ -146,11 +133,11 @@ fun TaskListScreen(
 //                )
                         //SectionTitle(text = stringResource(id = R.string.title_filters))
 
-                StatusFilterChips(
-                    selectedStatus = taskViewModel.status.collectAsState().value,
-                    onStatusSelected = { taskViewModel.status.value = it }
-                )
-            }
+                        StatusFilterChips(
+                            selectedStatus = taskViewModel.status.collectAsState().value,
+                            onStatusSelected = { taskViewModel.status.value = it }
+                        )
+                    }
 
 //            item {
 //                if (tasks.isNotEmpty()) {
@@ -177,62 +164,35 @@ fun TaskListScreen(
 //                }
 //            }
 
-            item {
-                Column(Modifier.fillMaxWidth()) {
-                    SectionTitle(text = stringResource(id = R.string.title_tasks))
-                    if (visibleTasks.isEmpty()) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(AppDimens.PaddingXLarge),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Inbox, // or a custom illustration
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(AppDimens.IconXLarge * 2) // 64dp
-                                    .padding(bottom = AppDimens.PaddingMedium),
-                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                            )
-                            Text(
-                                text = stringResource(R.string.no_tasks),
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Spacer(modifier = Modifier.height(AppDimens.PaddingSmall))
-                            Text(
-                                text = stringResource(R.string.no_tasks_hint),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(horizontal = AppDimens.PaddingLarge)
-                            )
-                        }
-                    } else {
-                        visibleTasks.forEach { task ->
-                            TaskItem(
-                                task = task,
-                                onEditClick = { clickedTask ->
-                                    navController.navigate(Screen.TaskEditor.createRoute(clickedTask.id))
-                                },
-                                onDeleteClick = { clickedTask ->
-                                    taskViewModel.deleteTask(clickedTask)
-                                },
-                                onShareClick = { clickedTask ->
-                                    shareTask(activity, clickedTask)
-                                    Log.d("ShareTask", "Launching chooser for task share $activity")
-                                },
-                                onToggle = { taskViewModel.toggleTaskCompletion(task) }
-                            )
-                            Spacer(Modifier.height(AppDimens.PaddingSmall))
+                    item {
+                        Column(Modifier.fillMaxWidth()) {
+                            SectionTitle(text = stringResource(id = R.string.title_tasks))
+                            visibleTasks.forEach { task ->
+                                TaskItem(
+                                    task = task,
+                                    onEditClick = { clickedTask ->
+                                        navController.navigate(Screen.TaskEditor.createRoute(clickedTask.id))
+                                    },
+                                    onDeleteClick = { clickedTask ->
+                                        taskViewModel.deleteTask(clickedTask)
+                                    },
+                                    onShareClick = { clickedTask ->
+                                        shareTask(activity, clickedTask)
+                                        Log.d("ShareTask", "Launching chooser for task share $activity")
+                                    },
+                                    onToggle = { taskViewModel.toggleTaskCompletion(task) }
+                                )
+                                Spacer(Modifier.height(AppDimens.PaddingSmall))
+                            }
                         }
                     }
                 }
             }
-        }
 
+            is TasksUiState.Error -> {
+                ErrorScreen( message = state.message)
+            }
+        }
     }
 }
 

@@ -16,7 +16,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,12 +40,58 @@ class TaskListViewModel @Inject constructor(
     private val _activeFilters = MutableStateFlow<Set<String>>(emptySet())
     val activeFilters: StateFlow<Set<String>> = _activeFilters
 
-
-    init {
-        viewModelScope.launch {
-            getAllTasksUseCase().collect { _tasks.value = it }
+    private val tasksFlow = getAllTasksUseCase()
+        .catch { exception ->
+            emit(emptyList())
         }
-    }
+
+    val visibleTasks: StateFlow<List<Task>> =
+        combine(tasksFlow, activeFilters, search, status) { list, filters, q, st ->
+            TaskUiFilterHelper.applyFilters(list, filters, q, st)
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
+
+
+    val uiState: StateFlow<TasksUiState> =
+        combine(
+            getAllTasksUseCase(),
+            activeFilters,
+            search,
+            status
+        ) { list, filters, q, st ->
+            val filteredTasks = TaskUiFilterHelper.applyFilters(list, filters, q, st)
+            if (list.isEmpty()) {
+                TasksUiState.Empty
+            } else {
+                TasksUiState.Success(filteredTasks)
+            }
+        }
+            .onStart {
+                emit(TasksUiState.Loading)
+            }
+            .catch { exception ->
+                emit(
+                    TasksUiState.Error(
+                        exception.message ?: "Something went wrong"
+                    )
+                )
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = TasksUiState.Loading
+            )
+
+
+//
+//    init {
+//        viewModelScope.launch {
+//            getAllTasksUseCase().collect { _tasks.value = it }
+//        }
+//    }
 
 
     fun deleteTask(task: Task) = viewModelScope.launch {
@@ -70,9 +119,9 @@ class TaskListViewModel @Inject constructor(
             }
     }
 
-    val visibleTasks: StateFlow<List<Task>> =
-        combine(tasks, activeFilters, search, status) { list, filters, q, st ->
-            TaskUiFilterHelper.applyFilters(list, filters, q, st)
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+//    val visibleTasks: StateFlow<List<Task>> =
+//        combine(tasks, activeFilters, search, status) { list, filters, q, st ->
+//            TaskUiFilterHelper.applyFilters(list, filters, q, st)
+//        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
 }

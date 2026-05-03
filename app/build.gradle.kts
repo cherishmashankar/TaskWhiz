@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.hilt.common)
+    implementation(libs.androidx.compose.runtime)
     kapt(libs.hilt.compiler)
 
     // Data - Local
