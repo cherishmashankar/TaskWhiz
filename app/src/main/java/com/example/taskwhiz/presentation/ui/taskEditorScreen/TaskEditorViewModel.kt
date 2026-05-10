@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.taskwhiz.domain.model.Task
+import com.example.taskwhiz.domain.usecase.reminder.SyncTaskReminderUseCase
 import com.example.taskwhiz.domain.usecase.task.DeleteTaskUseCase
 import com.example.taskwhiz.domain.usecase.task.GetTaskByIdUseCase
 import com.example.taskwhiz.domain.usecase.task.InsertTaskUseCase
@@ -24,6 +25,7 @@ class TaskEditorViewModel @Inject constructor(
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val getTaskByIdUseCase: GetTaskByIdUseCase,
+    private val syncReminder: SyncTaskReminderUseCase,
 ) : ViewModel() {
 
     private val taskId: Long = savedStateHandle["taskId"] ?: -1L
@@ -43,15 +45,19 @@ class TaskEditorViewModel @Inject constructor(
     fun saveTask(task: Task) {
         viewModelScope.launch {
             if (task.id == 0L) {
-                insertTaskUseCase(task)
+                val generatedId = insertTaskUseCase(task)
+
+                syncReminder(task.copy(id = generatedId))
             } else {
                 updateTaskUseCase(task)
+                syncReminder(task)
             }
         }
     }
 
     fun deleteTask(task: Task) {
         viewModelScope.launch {
+            syncReminder(task.copy(reminderAt = null))
             deleteTaskUseCase(task)
         }
     }

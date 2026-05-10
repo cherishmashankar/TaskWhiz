@@ -1,5 +1,7 @@
 package com.example.taskwhiz.presentation.ui.taskEditorScreen
 
+
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -9,9 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.taskwhiz.R
 import com.example.taskwhiz.domain.model.Task
 import com.example.taskwhiz.presentation.ui.theme.AppDimens
@@ -19,19 +19,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.ColorPaletteSelector
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.SubtaskList
@@ -39,17 +40,60 @@ import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.TaskEdit
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.TaskEditorOverflowMenu
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.TaskTitleInput
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.components.TimePickerDialog
+import com.example.taskwhiz.presentation.utils.PermissionHandler
+import com.example.taskwhiz.presentation.utils.findActivity
 import kotlinx.coroutines.android.awaitFrame
 import java.util.Calendar
 
+@SuppressLint("ContextCastToActivity")
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskEditorScreen(
     onBack: () -> Unit,
     viewModel: TaskEditorViewModel = hiltViewModel()
+
 ) {
     val task by viewModel.task.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val activity = LocalContext.current.findActivity()
+
+    var hasExactAlarmPermission by remember {
+        mutableStateOf(
+            PermissionHandler.hasExactAlarmPermission(context)
+        )
+    }
+
+    var hasNotificationPermission by remember {
+        mutableStateOf(
+            PermissionHandler.hasNotificationPermission(context)
+        )
+    }
+
+
+    DisposableEffect(lifecycleOwner, context) {
+
+        val observer = LifecycleEventObserver { _, event ->
+
+            if (event == Lifecycle.Event.ON_RESUME) {
+
+                hasExactAlarmPermission =
+                    PermissionHandler.hasExactAlarmPermission(context)
+
+                hasNotificationPermission =
+                    PermissionHandler.hasNotificationPermission(context)
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+
 
     var title by rememberSaveable(task?.id) { mutableStateOf(task?.title ?: "") }
     var selectedColor by rememberSaveable(task?.id) { mutableStateOf(task?.colorCode ?: "#FF6F61") }
@@ -185,7 +229,18 @@ fun TaskEditorScreen(
                     hasDue = dueDate != null,
                     hasReminder = reminderDate != null,
                     onRequestSetDueDate = { showDatePickerForDue = true },
-                    onRequestSetReminder = { showDatePickerForReminder = true },
+                    onRequestSetReminder = {
+                        if (hasExactAlarmPermission && hasNotificationPermission) {
+                            showDatePickerForReminder = true
+                        } else {
+                            if (!hasNotificationPermission) {
+                                PermissionHandler.requestNotificationPermission(activity)
+                            }
+
+                            if (!hasExactAlarmPermission) {
+                                PermissionHandler.requestExactAlarmPermission(context)
+                            }
+                        } },
                     onClearDueDate = { dueDate = null },
                     onClearReminder = { reminderDate = null },
                     hasHighPriority = (taskPriority == 1),
@@ -219,12 +274,24 @@ fun TaskEditorScreen(
                     )
             }
                 Spacer(Modifier.height(AppDimens.PaddingLarge))
+
                 TaskEditorMoreOptionSection(
                     dueDate = dueDate,
                     reminderDate = reminderDate,
                     isHighPriority = (taskPriority == 1),
                     onSetDueClick = { showDatePickerForDue = true },
-                    onSetReminderClick = { showDatePickerForReminder = true },
+                    onSetReminderClick = {
+                        if (hasExactAlarmPermission && hasNotificationPermission) {
+                        showDatePickerForReminder = true
+                    } else {
+                            if (!hasNotificationPermission) {
+                                PermissionHandler.requestNotificationPermission(activity)
+                            }
+
+                            if (!hasExactAlarmPermission) {
+                                PermissionHandler.requestExactAlarmPermission(context)
+                            }
+                    }},
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -299,4 +366,6 @@ fun TaskEditorScreen(
         )
     }
 }
+
+
 

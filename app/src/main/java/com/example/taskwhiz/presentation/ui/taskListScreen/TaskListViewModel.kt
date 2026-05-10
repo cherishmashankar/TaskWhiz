@@ -3,10 +3,11 @@ package com.example.taskwhiz.presentation.ui.taskListScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.taskwhiz.domain.model.Task
+import com.example.taskwhiz.domain.usecase.reminder.SyncTaskReminderUseCase
 import com.example.taskwhiz.domain.usecase.task.DeleteTaskUseCase
 import com.example.taskwhiz.domain.usecase.task.GetAllTasksUseCase
 import com.example.taskwhiz.domain.usecase.task.GetTaskByIdUseCase
-import com.example.taskwhiz.domain.usecase.task.InsertTaskUseCase
+
 import com.example.taskwhiz.domain.usecase.task.UpdateTaskUseCase
 import com.example.taskwhiz.presentation.helpers.TaskUiFilterHelper
 import com.example.taskwhiz.presentation.utils.TaskFilters
@@ -30,6 +31,7 @@ class TaskListViewModel @Inject constructor(
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val getTaskByIdUseCase: GetTaskByIdUseCase,
+    private val syncReminder: SyncTaskReminderUseCase,
 ) : ViewModel() {
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
     val tasks: StateFlow<List<Task>> = _tasks
@@ -39,21 +41,6 @@ class TaskListViewModel @Inject constructor(
 
     private val _activeFilters = MutableStateFlow<Set<String>>(emptySet())
     val activeFilters: StateFlow<Set<String>> = _activeFilters
-
-    private val tasksFlow = getAllTasksUseCase()
-        .catch { exception ->
-            emit(emptyList())
-        }
-
-    val visibleTasks: StateFlow<List<Task>> =
-        combine(tasksFlow, activeFilters, search, status) { list, filters, q, st ->
-            TaskUiFilterHelper.applyFilters(list, filters, q, st)
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            emptyList()
-        )
-
 
     val uiState: StateFlow<TasksUiState> =
         combine(
@@ -86,15 +73,9 @@ class TaskListViewModel @Inject constructor(
             )
 
 
-//
-//    init {
-//        viewModelScope.launch {
-//            getAllTasksUseCase().collect { _tasks.value = it }
-//        }
-//    }
-
 
     fun deleteTask(task: Task) = viewModelScope.launch {
+        syncReminder(task.copy(reminderAt = null))
         deleteTaskUseCase(task)
     }
 
@@ -119,9 +100,5 @@ class TaskListViewModel @Inject constructor(
             }
     }
 
-//    val visibleTasks: StateFlow<List<Task>> =
-//        combine(tasks, activeFilters, search, status) { list, filters, q, st ->
-//            TaskUiFilterHelper.applyFilters(list, filters, q, st)
-//        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
 }

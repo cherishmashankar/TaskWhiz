@@ -54,7 +54,6 @@ fun TaskListScreen(
 
 
     val tasks by taskViewModel.tasks.collectAsState(initial = emptyList())
-    val visibleTasks by taskViewModel.visibleTasks.collectAsState(initial = emptyList())
     val activeFilters by taskViewModel.activeFilters.collectAsState(initial = emptySet())
 
     val language by settingsViewModel.language.collectAsState()
@@ -167,7 +166,7 @@ fun TaskListScreen(
                     item {
                         Column(Modifier.fillMaxWidth()) {
                             SectionTitle(text = stringResource(id = R.string.title_tasks))
-                            visibleTasks.forEach { task ->
+                            state.tasks.forEach { task ->
                                 TaskItem(
                                     task = task,
                                     onEditClick = { clickedTask ->

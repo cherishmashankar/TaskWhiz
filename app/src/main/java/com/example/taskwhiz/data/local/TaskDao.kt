@@ -24,4 +24,8 @@ interface TaskDao {
     fun getTaskById(id: Long): Flow<TaskEntity?>
 
 
+    @Query("SELECT * FROM tasks WHERE reminder_at > :currentTime")
+    suspend fun getAllTasksWithFutureReminders(currentTime: Long): List<TaskEntity>
+
+
 }

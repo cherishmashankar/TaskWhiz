@@ -23,10 +23,8 @@ class TaskRepositoryImpl @Inject constructor(
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : TaskRepository {
 
-    override suspend fun insertTask(task: Task) {
-        withContext(ioDispatcher) {
-            taskDao.insertTask(task.toEntity())
-        }
+    override suspend fun insertTask(task: Task): Long = withContext(ioDispatcher) {
+        taskDao.insertTask(task.toEntity())
     }
 
     override suspend fun deleteTask(task: Task) {
@@ -55,5 +53,13 @@ class TaskRepositoryImpl @Inject constructor(
                 entity?.toDomain()
             }
             .flowOn(ioDispatcher)
+    }
+
+
+
+    override suspend fun getAllTasksWithFutureReminders(currentTime: Long): List<Task> {
+        return taskDao.getAllTasksWithFutureReminders(currentTime).map { entity ->
+            entity.toDomain()
+        }
     }
 }

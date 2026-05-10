@@ -1,10 +1,12 @@
 package com.example.taskwhiz.di
 
 import com.example.taskwhiz.data.repository.PreferencesRepositoryImpl
+import com.example.taskwhiz.data.repository.ReminderSchedulerRepositoryImpl
 import com.example.taskwhiz.data.repository.TaskRepositoryImpl
 import com.example.taskwhiz.domain.model.AppTheme
 import com.example.taskwhiz.domain.model.Language
 import com.example.taskwhiz.domain.repository.PreferencesRepository
+import com.example.taskwhiz.domain.repository.ReminderSchedulerRepository
 import com.example.taskwhiz.domain.repository.TaskRepository
 import dagger.Binds
 import dagger.Module
@@ -29,4 +31,10 @@ abstract class RepositoryModule {
         impl: PreferencesRepositoryImpl
     ): PreferencesRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindReminderSchedulerRepository(
+        impl: ReminderSchedulerRepositoryImpl
+    ): ReminderSchedulerRepository
 }
+

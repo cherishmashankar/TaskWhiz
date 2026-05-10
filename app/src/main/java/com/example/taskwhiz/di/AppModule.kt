@@ -6,6 +6,8 @@ import com.example.taskwhiz.data.local.TaskDao
 import com.example.taskwhiz.data.local.TaskDatabase
 import com.example.taskwhiz.data.preferences.PreferencesManager
 import com.example.taskwhiz.data.remote.TaskApiService
+import com.example.taskwhiz.data.repository.ReminderSchedulerRepositoryImpl
+import com.example.taskwhiz.domain.repository.ReminderSchedulerRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -56,3 +58,4 @@ object AppModule {
     }
 
 }
+
