@@ -19,7 +19,6 @@ import com.example.taskwhiz.presentation.ui.taskListScreen.TaskListScreen
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.TaskEditorScreen
 
 
-@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun AppNavGraph(
     navController: NavHostController,

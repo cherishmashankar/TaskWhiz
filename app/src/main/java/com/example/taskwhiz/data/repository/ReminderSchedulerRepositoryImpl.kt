@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import com.example.taskwhiz.data.reminder.TaskReminderReceiver
 import com.example.taskwhiz.domain.repository.ReminderSchedulerRepository
+import com.example.taskwhiz.utils.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -50,8 +51,8 @@ class ReminderSchedulerRepositoryImpl @Inject constructor(
 
     private fun createPendingIntent(taskId: Long, title: String): PendingIntent {
         val intent = Intent(context, TaskReminderReceiver::class.java).apply {
-            putExtra("EXTRA_TASK_ID", taskId)
-            putExtra("EXTRA_TASK_TITLE", title)
+            putExtra(Constants.EXTRA_TASK_ID, taskId)
+            putExtra(Constants.EXTRA_TASK_TITLE, title)
         }
 
         return PendingIntent.getBroadcast(

@@ -2,7 +2,6 @@ package com.example.taskwhiz.domain.usecase.reminder
 
 import com.example.taskwhiz.domain.model.Task
 import com.example.taskwhiz.domain.repository.ReminderSchedulerRepository
-import com.example.taskwhiz.domain.repository.TaskRepository
 import javax.inject.Inject
 
 class SyncTaskReminderUseCase @Inject constructor(

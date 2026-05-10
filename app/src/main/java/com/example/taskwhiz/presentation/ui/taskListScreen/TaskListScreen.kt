@@ -10,9 +10,6 @@ import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -25,28 +22,24 @@ import androidx.navigation.NavHostController
 import com.example.taskwhiz.R
 import com.example.taskwhiz.navigation.Screen
 import com.example.taskwhiz.presentation.helpers.shareTask
-import com.example.taskwhiz.presentation.ui.taskListScreen.FilterItem
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.CenteredLoader
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.EmptyTasksScreen
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.ErrorScreen
-import com.example.taskwhiz.presentation.ui.taskListScreen.components.FilterCard
 import com.example.taskwhiz.presentation.utils.TaskFilters
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.SectionTitle
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.StatusFilterChips
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.TaskItem
-import com.example.taskwhiz.presentation.ui.taskListScreen.components.TaskSearchBar
 import com.example.taskwhiz.presentation.ui.taskListScreen.components.TaskWhizFloatingActionButton
 import com.example.taskwhiz.presentation.ui.theme.AppDimens
 import com.example.taskwhiz.presentation.viewmodel.SettingsViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
 @Composable
 fun TaskListScreen(
     taskViewModel: TaskListViewModel = hiltViewModel() ,
-    settingsViewModel: SettingsViewModel = hiltViewModel(),
+//    settingsViewModel: SettingsViewModel = hiltViewModel(),
     navController: NavHostController,
     activity: Activity
 ) {
@@ -54,10 +47,10 @@ fun TaskListScreen(
 
 
     val tasks by taskViewModel.tasks.collectAsState(initial = emptyList())
-    val activeFilters by taskViewModel.activeFilters.collectAsState(initial = emptySet())
-
-    val language by settingsViewModel.language.collectAsState()
-    val theme by settingsViewModel.theme.collectAsState()
+//    val activeFilters by taskViewModel.activeFilters.collectAsState(initial = emptySet())
+//
+//    val language by settingsViewModel.language.collectAsState()
+//    val theme by settingsViewModel.theme.collectAsState()
 
     val todayCount =
         tasks.count { it.dueAt?.let { d -> DateUtils.isToday(d) } == true }

@@ -45,8 +45,7 @@ import com.example.taskwhiz.presentation.utils.findActivity
 import kotlinx.coroutines.android.awaitFrame
 import java.util.Calendar
 
-@SuppressLint("ContextCastToActivity")
-@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskEditorScreen(
@@ -54,6 +53,8 @@ fun TaskEditorScreen(
     viewModel: TaskEditorViewModel = hiltViewModel()
 
 ) {
+
+    // Needs to be refactored
     val task by viewModel.task.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -71,29 +72,20 @@ fun TaskEditorScreen(
         )
     }
 
-
     DisposableEffect(lifecycleOwner, context) {
-
         val observer = LifecycleEventObserver { _, event ->
-
             if (event == Lifecycle.Event.ON_RESUME) {
-
                 hasExactAlarmPermission =
                     PermissionHandler.hasExactAlarmPermission(context)
-
                 hasNotificationPermission =
                     PermissionHandler.hasNotificationPermission(context)
             }
         }
-
         lifecycleOwner.lifecycle.addObserver(observer)
-
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
-
-
 
     var title by rememberSaveable(task?.id) { mutableStateOf(task?.title ?: "") }
     var selectedColor by rememberSaveable(task?.id) { mutableStateOf(task?.colorCode ?: "#FF6F61") }
@@ -107,7 +99,6 @@ fun TaskEditorScreen(
     var showTimePicker by remember { mutableStateOf(false) }
     var pendingReminderDate by remember { mutableStateOf<Long?>(null) }
     var showTitleError by remember { mutableStateOf(false) }
-
 
     val dateValidator = remember {
         object : SelectableDates {

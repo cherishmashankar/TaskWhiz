@@ -24,7 +24,7 @@ class TaskEditorViewModel @Inject constructor(
     private val insertTaskUseCase: InsertTaskUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
-    private val getTaskByIdUseCase: GetTaskByIdUseCase,
+    getTaskByIdUseCase: GetTaskByIdUseCase,
     private val syncReminder: SyncTaskReminderUseCase,
 ) : ViewModel() {
 
