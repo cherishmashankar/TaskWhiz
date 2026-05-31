@@ -14,7 +14,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
 import com.example.taskwhiz.domain.model.Task
-import com.example.taskwhiz.presentation.viewmodel.TaskViewModel
+import com.example.taskwhiz.presentation.ui.taskCaptureScreen.TaskCaptureScreen
+import com.example.taskwhiz.presentation.ui.taskCaptureScreen.TaskCaptureUiState
 import com.example.taskwhiz.presentation.ui.taskListScreen.TaskListScreen
 import com.example.taskwhiz.presentation.ui.taskEditorScreen.TaskEditorScreen
 
@@ -49,6 +50,17 @@ fun AppNavGraph(
                 onBack = { navController.popBackStack() }
             )
         }
+
+        composable(Screen.TaskCapture.route) {
+            TaskCaptureScreen(
+                onDismiss = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+
+
 
     }
 }

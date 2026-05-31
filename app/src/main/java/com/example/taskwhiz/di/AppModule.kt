@@ -40,7 +40,8 @@ object AppModule {
     @Singleton
     fun provideRetrofit(): Retrofit = Retrofit
         .Builder()
-        .baseUrl("https://router.huggingface.co/sambanova/")
+        .baseUrl("http://10.0.2.2:8000/")
+//        .baseUrl("http://192.168.0.96:8000/") // Android emulator local server
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.taskwhiz.domain.model.Task
 import com.example.taskwhiz.domain.usecase.reminder.SyncTaskReminderUseCase
 import com.example.taskwhiz.domain.usecase.task.DeleteTaskUseCase
+import com.example.taskwhiz.domain.usecase.task.GenerateTaskFromAIUseCase
 import com.example.taskwhiz.domain.usecase.task.GetTaskByIdUseCase
 import com.example.taskwhiz.domain.usecase.task.InsertTaskUseCase
 import com.example.taskwhiz.domain.usecase.task.UpdateTaskUseCase

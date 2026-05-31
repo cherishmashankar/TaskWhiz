@@ -5,12 +5,11 @@ import com.example.taskwhiz.data.local.TaskDao
 import com.example.taskwhiz.data.mapper.toEntity
 import com.example.taskwhiz.data.mapper.toDomain
 import com.example.taskwhiz.data.remote.TaskApiService
-import com.example.taskwhiz.data.remote.TaskResponse
+import com.example.taskwhiz.data.remote.dto.TaskRequestDto
 import com.example.taskwhiz.di.IoDispatcher
 import com.example.taskwhiz.domain.model.Task
 import com.example.taskwhiz.domain.repository.TaskRepository
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -61,5 +60,12 @@ class TaskRepositoryImpl @Inject constructor(
         return taskDao.getAllTasksWithFutureReminders(currentTime).map { entity ->
             entity.toDomain()
         }
+    }
+
+    override suspend fun generateTaskFromAI(text: String): Task = withContext(ioDispatcher) {
+        val response = taskApiService.generateTask(
+            TaskRequestDto(text)
+        )
+        response.toDomain()
     }
 }

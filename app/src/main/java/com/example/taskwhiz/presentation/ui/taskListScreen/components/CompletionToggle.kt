@@ -42,13 +42,21 @@ fun CompletionToggle(
     val taskColor = Color(colorHex.toColorInt())
 
     val bgColor by animateColorAsState(
-        if (isCompleted) taskColor else Color.Transparent,
-        animationSpec = tween(250), label = "bg"
+        if (isCompleted)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+        else
+            Color.Transparent,
+        animationSpec = tween(250),
+        label = "bg"
     )
 
     val borderColor by animateColorAsState(
-        if (isCompleted) taskColor else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-        animationSpec = tween(250), label = "border"
+        if (isCompleted)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+        else
+            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+        animationSpec = tween(250),
+        label = "border"
     )
     val borderWidth by animateDpAsState(
         if (isCompleted) 0.dp else AppDimens.BorderNormal,

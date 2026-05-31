@@ -9,4 +9,6 @@ sealed class Screen(val route: String) {
             return "task_editor/$taskId"
         }
     }
+
+    data object TaskCapture : Screen("task_capture")
 }

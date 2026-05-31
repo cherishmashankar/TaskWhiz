@@ -13,7 +13,7 @@ data class Task(
     val priorityLevel: Int = 2,
     val lastModifiedAt: Long = createdAt,
     val archived: Boolean = false,
-    val isMessy: Boolean = true,
+    val isAIGenerated: Boolean = false,
     val rawInput: String? = null
 )
 

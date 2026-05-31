@@ -58,6 +58,8 @@ espressoCore = "3.7.0"
 androidxTestCore = "1.5.0"
 androidxTestJunitOld = "1.1.5"
 runtime = "1.11.0"
+material3 = "1.4.0"
+runtimeVersion = "1.11.2"
 
 
 [libraries]
@@ -130,6 +132,8 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 androidx-test-ext-junit-old = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunitOld" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtimeVersion" }
 
 
 [plugins]

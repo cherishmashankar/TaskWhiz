@@ -38,7 +38,7 @@ fun TaskOverflowMenu(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = stringResource(R.string.more_options),
                 modifier = Modifier.size(20.dp),
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.onSurface
             )
         }
 

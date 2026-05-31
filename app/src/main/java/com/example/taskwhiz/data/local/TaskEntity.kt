@@ -25,8 +25,8 @@ data class TaskEntity(
     @ColumnInfo(name = "reminder_at")
     val reminderAt: Long? = null,
 
-    @ColumnInfo(name = "is_messy")
-    val isMessy: Boolean = true,
+    @ColumnInfo(name = "is_ai_generated")
+    val isAIGenerated: Boolean = true,
 
     @ColumnInfo(name = "raw_input")
     val rawInput: String? = null, // Original messy input if any
@@ -38,7 +38,7 @@ data class TaskEntity(
     val taskItems: List<String> = emptyList(), // Requires a TypeConverter
 
     @ColumnInfo(name = "color_code")
-    val colorCode: String = "#FFFFFF",
+    val colorCode: String = "#FF5252",
 
     @ColumnInfo(name = "priority_level")
     val priorityLevel: Int = 2, // 0 = High, 1 = Medium, 2 = Low

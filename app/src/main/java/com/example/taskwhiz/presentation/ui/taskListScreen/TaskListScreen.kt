@@ -92,7 +92,12 @@ fun TaskListScreen(
     Scaffold(
         floatingActionButton = {
             TaskWhizFloatingActionButton(
-                onClick = { navController.navigate(Screen.TaskEditor.createRoute()) },
+                onAddTaskClick = {
+                    navController.navigate(Screen.TaskEditor.createRoute())
+                },
+                onSmartTaskClick = {
+                    navController.navigate(Screen.TaskCapture.route)
+                },
                 modifier = Modifier.padding(AppDimens.PaddingLarge)
             )
         }

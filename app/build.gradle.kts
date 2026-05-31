@@ -16,7 +16,7 @@ android {
     defaultConfig {
         applicationId = "com.example.taskwhiz"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -43,6 +43,10 @@ android {
 
     buildFeatures {
         compose = true
+    }
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
@@ -74,6 +78,8 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.hilt.common)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.runtime)
     kapt(libs.hilt.compiler)
 
     // Data - Local
@@ -125,4 +131,6 @@ dependencies {
     androidTestImplementation(libs.truth)
     androidTestImplementation(libs.androidx.test.ext.junit.old)
     androidTestImplementation(libs.androidx.test.core)
+
+    testImplementation("org.robolectric:robolectric:4.13")
 }

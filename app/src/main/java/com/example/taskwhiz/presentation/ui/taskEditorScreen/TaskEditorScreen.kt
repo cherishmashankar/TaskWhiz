@@ -1,9 +1,5 @@
 package com.example.taskwhiz.presentation.ui.taskEditorScreen
 
-
-import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -126,7 +122,7 @@ fun TaskEditorScreen(
         colorCode = selectedColor,
         taskItems = subtasks.filter { it.isNotBlank() },
         createdAt = task?.createdAt ?: System.currentTimeMillis(),
-        isMessy = task?.isMessy ?: false,
+        isAIGenerated = task?.isAIGenerated ?: false,
         priorityLevel = taskPriority,
         dueAt = dueDate,
         reminderAt = reminderDate
@@ -250,21 +246,21 @@ fun TaskEditorScreen(
             }
 
             Spacer(Modifier.height(AppDimens.PaddingLarge))
-            Card(
-                shape = RoundedCornerShape(AppDimens.CornerLarge),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-
-                    ColorPaletteSelector(
-                        selectedColor = selectedColor,
-                        onColorChange = { selectedColor = it }
-                    )
-            }
-                Spacer(Modifier.height(AppDimens.PaddingLarge))
+//            Card(
+//                shape = RoundedCornerShape(AppDimens.CornerLarge),
+//                colors = CardDefaults.cardColors(
+//                    containerColor = MaterialTheme.colorScheme.background
+//                ),
+//                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+//                modifier = Modifier.fillMaxWidth()
+//            ) {
+//
+//                    ColorPaletteSelector(
+//                        selectedColor = selectedColor,
+//                        onColorChange = { selectedColor = it }
+//                    )
+//            }
+//                Spacer(Modifier.height(AppDimens.PaddingLarge))
 
                 TaskEditorMoreOptionSection(
                     dueDate = dueDate,
@@ -302,17 +298,16 @@ fun TaskEditorScreen(
             selectableDates = dateValidator
         )
         DatePickerDialog(
-            onDismissRequest = { showDatePickerForDue = false },
+            onDismissRequest = { },
             confirmButton = {
                 TextButton(
                     onClick = {
                         dueDate = duePickerState.selectedDateMillis
-                        showDatePickerForDue = false
                     }
                 ) { Text(stringResource(R.string.ok)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePickerForDue = false }) {
+                TextButton(onClick = { }) {
                     Text(stringResource(R.string.cancel))
                 }
             }
@@ -327,18 +322,17 @@ fun TaskEditorScreen(
             selectableDates = dateValidator
         )
         DatePickerDialog(
-            onDismissRequest = { showDatePickerForReminder = false },
+            onDismissRequest = { },
             confirmButton = {
                 TextButton(
                     onClick = {
                         pendingReminderDate = reminderPickerState.selectedDateMillis
-                        showDatePickerForReminder = false
                         if (pendingReminderDate != null) showTimePicker = true
                     }
                 ) { Text(stringResource(R.string.next)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePickerForReminder = false }) {
+                TextButton(onClick = { }) {
                     Text(stringResource(R.string.cancel))
                 }
             }
